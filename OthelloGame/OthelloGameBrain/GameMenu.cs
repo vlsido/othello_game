@@ -12,7 +12,12 @@ namespace OthelloGameBrain
     {
         public void MainMenu()
         {
-            Console.Clear();
+            var brain = new OthelloBrain(8, 8);
+            var playerBlack = brain.GetBoard(0);
+            var playerWhite = brain.GetBoard(1);
+            var boardSize = new BoardSize();
+
+            //Console.Clear();
             var mainMenu = new Menu("Othello Game", EMenuLevel.Root);
             mainMenu.AddMenuItems(new List<MenuItem>()
             {
@@ -21,48 +26,51 @@ namespace OthelloGameBrain
             });
 
             mainMenu.Run();
-        }
 
-        public static string SubmenuNewGame()
-        {
-            var menu = new Menu("New game", EMenuLevel.First);
-            menu.AddMenuItems(new List<MenuItem>()
+            string SubmenuNewGame()
             {
-                new MenuItem("Start", StartGame),
-                new MenuItem("Options", Options),
-            });
-            var res = menu.Run();
-            return res;
-        }
+                var menu = new Menu("New game", EMenuLevel.First);
+                menu.AddMenuItems(new List<MenuItem>()
+                {
+                    new MenuItem("Start", StartGame),
+                    new MenuItem("Options", Options),
+                });
+                var res = menu.Run();
+                return res;
+            }
 
-        public static string SubmenuLoadGame()
-        {
-            var menu = new Menu("New game", EMenuLevel.First);
-            menu.AddMenuItems(new List<MenuItem>()
+            string SubmenuLoadGame()
             {
-                new MenuItem("Saved Games", SavedGames),
-                new MenuItem("Options", Options),
-            });
-            var res = menu.Run();
-            return res;
+                var menu = new Menu("New game", EMenuLevel.First);
+                menu.AddMenuItems(new List<MenuItem>()
+                {
+                    new MenuItem("Saved Games", SavedGames),
+                    new MenuItem("Options", Options),
+                });
+                var res = menu.Run();
+                return res;
+            }
+
+            string StartGame()
+            {
+                var game = new GameAction();
+                game.Start(brain, playerBlack, playerWhite, boardSize);
+                return "";
+            }
+
+            string SavedGames()
+            {
+                Console.WriteLine("Enjoy your game!");
+                return "";
+            }
+
+            string Options()
+            {
+                Console.WriteLine("Enjoy your game!");
+                return "";
+            }
         }
 
-        public static string StartGame()
-        {
-
-            return "";
-        }
-
-        public static string SavedGames()
-        {
-            Console.WriteLine("Enjoy your game!");
-            return "";
-        }
-
-        public static string Options()
-        {
-            Console.WriteLine("Enjoy your game!");
-            return "";
-        }
+        
     }
 }

@@ -17,19 +17,23 @@ namespace OthelloGameBrain
             {
                 case (true, true):
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("[x]");
+                    Console.Write("[W]");
                     Console.ResetColor();
                     return "";
                 case (true, false):
                     Console.ForegroundColor = ConsoleColor.Black;
-                    Console.Write("[x]");
+                    Console.Write("[B]");
                     Console.ResetColor();
                     return "";
                 case (false, true):
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("[ ]");
+                    Console.ResetColor();
                     return "";
                 case (false, false):
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("[ ]");
+                    Console.ResetColor();
                     return "";
             }
         }

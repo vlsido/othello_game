@@ -40,7 +40,6 @@ namespace OthelloGameBrain
             for (var x = 0; x < board.GetLength(0); x++)
             for (var y = 0; y < board.GetLength(1); y++)
                 res[x, y] = board[x, y];
-
             return res;
         }
 

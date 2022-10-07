@@ -1,0 +1,2 @@
+1. set pieces in initial position
+2. assign numbers to ranks, assign letters to files
