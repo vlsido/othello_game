@@ -13,10 +13,13 @@ namespace OthelloGameBrain
         public void MainMenu()
         {
             var brain = new OthelloBrain(8, 8);
-            var playerBlack = brain.GetBoard(0);
-            var playerWhite = brain.GetBoard(1);
+            var board = brain.GetBoard();
             var boardSize = new BoardSize();
-
+            var settings = new Options();
+            // if default settings
+           settings.DefaultOptions(board);
+            // TODO: if not default settings
+            
             //Console.Clear();
             var mainMenu = new Menu("Othello Game", EMenuLevel.Root);
             mainMenu.AddMenuItems(new List<MenuItem>()
@@ -54,7 +57,7 @@ namespace OthelloGameBrain
             string StartGame()
             {
                 var game = new GameAction();
-                game.Start(brain, playerBlack, playerWhite, boardSize);
+                game.Start(brain, board, boardSize);
                 return "";
             }
 

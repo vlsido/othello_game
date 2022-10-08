@@ -1,6 +1,7 @@
 ﻿using MenuSystem;
 using OthelloGameBrain;
 
+
 namespace OthelloGameConsoleApp
 {
     internal class Program

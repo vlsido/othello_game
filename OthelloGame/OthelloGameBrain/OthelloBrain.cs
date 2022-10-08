@@ -9,7 +9,7 @@ namespace OthelloGameBrain
     public class OthelloBrain
     {
         public string CurrentPlayer = "Black";
-        public GameBoard[] GameBoards = new GameBoard[2];
+        public GameBoard GameBoard = new GameBoard();
 
         private readonly Random _rnd = new();
 
@@ -19,19 +19,15 @@ namespace OthelloGameBrain
 
         public OthelloBrain(int boardSizeHorizontal, int boardSizeVertical)
         {
-            GameBoards[0] = new GameBoard
-            {
-                Board = new BoardSquareState[boardSizeHorizontal, boardSizeVertical]
-            };
-            GameBoards[1] = new GameBoard
+            GameBoard = new GameBoard
             {
                 Board = new BoardSquareState[boardSizeHorizontal, boardSizeVertical]
             };
         }
 
-        public BoardSquareState[,] GetBoard(int playerNo)
+        public BoardSquareState[,] GetBoard()
         {
-            return CreateBoard(GameBoards[playerNo].Board);
+            return CreateBoard(GameBoard.Board);
         }
 
         private BoardSquareState[,] CreateBoard(BoardSquareState[,] board)
