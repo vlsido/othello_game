@@ -8,7 +8,7 @@ namespace OthelloGameBrain
 {
     public class Navigation
     {
-        (OthelloBrain, BoardSquareState[,]) Navigate(OthelloBrain brain, BoardSquareState[,] board)
+        public (OthelloBrain, BoardSquareState[,]) Navigate(OthelloBrain brain, BoardSquareState[,] board)
         {
             int axisX = 0;
             int axisY = 0;

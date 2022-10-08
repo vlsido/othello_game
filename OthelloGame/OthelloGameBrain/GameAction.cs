@@ -11,10 +11,13 @@ namespace OthelloGameBrain
         // TODO: Get boards, check if valid move, place piece, flip pieces, check if game over, check if player can move, switch player, repeat
         public string Start(OthelloBrain brain, BoardSquareState[,] board, BoardSize boardSize)
         {
+            var navigation = new Navigation();
+
             const bool gameOver = false;
             brain.GetBoard();
             board[0, 0].IsSelected = true;
-
+            
+            
             // if default settings
             // { }
 
@@ -44,8 +47,9 @@ namespace OthelloGameBrain
             }
             
             // TODO: Check valid moves (and highlight them)
-            
 
+            navigation.Navigate(brain, board);
+            
             return "";
         }
     }
