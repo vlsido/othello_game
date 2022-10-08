@@ -20,87 +20,32 @@ namespace OthelloGameBrain
 
             // play game until gameOver == true
 
-            int axisX = 0;
-            int axisY = 0;
-            do
+            
+            var _rnd = new Random();
+            
+            // choose game vs comp or vs real player
+
+            if (_rnd.Next(0, 1) == 0)
             {
-               
-                    // draw board
-                Console.Clear();
-                OthelloUI.DrawBoard(board);
-                // Starting position of cursor
+                Console.WriteLine("You play as Black");
+            }
+            else
+            {
+                Console.WriteLine("You play as White");
+            }
 
-                // check if player can move
-                if (brain.CurrentPlayer == "Black")
-                {
-                    Console.WriteLine("-\nBlack to move");
-                }
-                var moveDone = false;
-                var keyInfo = Console.ReadKey();
-                switch (keyInfo.Key)
-                {
-                    case ConsoleKey.UpArrow:
-                        board[axisX, axisY].IsSelected = false;
-                        if (axisY - 1 >= 0) axisY -= 1;
-                        board[axisX, axisY].IsSelected = true;
-                        break;
-                    case ConsoleKey.DownArrow:
-                        if (axisY + 1 > brain.BoardSizeVertical - 1)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            board[axisX, axisY].IsSelected = false;
-                            axisY += 1;
-                            board[axisX, axisY].IsSelected = true;
-                        }
-                        
-                        break;
-                    case ConsoleKey.RightArrow:
-                        if (axisX + 1 > brain.BoardSizeHorizontal - 1)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            board[axisX, axisY].IsSelected = false;
-                            axisX += 1;
-                            board[axisX, axisY].IsSelected = true;
-                        }
+            // Throw goofy exception
 
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        board[axisX, axisY].IsSelected = false;
-                        if (axisX - 1 >= 0) axisX -= 1;
-                        board[axisX, axisY].IsSelected = true;
-                        break;
-                }
-                // if player can move
-                // player moves
-                // check if valid move
-                // if valid move
-                // place piece
-                // flip pieces
-                // check if game over
-                // if game over
-                // gameOver = true
-                // else
-                // switch player
-                // check if player can move
-                // if player can move
-                // player moves
-                // check if valid move
-                // if valid move
-                // place piece
-                // flip pieces
-                // check if game over
-                // if game over
-                // gameOver = true
-                // else
-                // switch player
+            //brain.CurrentPlayer = "Intruder";
 
-            } while (gameOver == false);
+            if (brain.CurrentPlayer is not ("Black" or "White"))
+            {
+                throw new BadPlayerException("Don't mess with this code >:|", brain.CurrentPlayer);
+            }
+            
+            // TODO: Check valid moves (and highlight them)
+            
+
             return "";
         }
     }
