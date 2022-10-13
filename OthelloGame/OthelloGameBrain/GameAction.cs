@@ -12,9 +12,12 @@ namespace OthelloGameBrain
         public string Start(OthelloBrain brain, BoardSquareState[,] board, BoardSize boardSize)
         {
             var navigation = new Navigation();
+            var validMove = new ValidMoves();
 
             const bool gameOver = false;
+
             brain.GetBoard();
+         
             board[0, 0].IsSelected = true;
             
             
@@ -45,9 +48,10 @@ namespace OthelloGameBrain
             {
                 throw new BadPlayerException("Don't mess with this code >:|", brain.CurrentPlayer);
             }
-            
+
             // TODO: Check valid moves (and highlight them)
 
+            
             navigation.Navigate(brain, board);
             
             return "";

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace OthelloGameBrain
 {
@@ -12,23 +13,51 @@ namespace OthelloGameBrain
         public string PlayerColor { get; set; }
         public bool IsSelected { get; set; }
         public bool IsValid { get; set; }
+        public bool IsFileNotation { get; set; }
+
+
 
         public override string ToString()
         {
-            switch (IsValid)
+            switch (IsValid, PlayerColor)
             {
-                case true:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("[_]");
+                case (true, "Black"):
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Write("[B]");
+                    Console.ResetColor();
+                    return "";
+                case (true, "White"):
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("[W]");
                     Console.ResetColor();
                     return "";
             }
 
-            switch (IsPlaced)
+            switch (IsValid, IsPlaced, IsSelected)
             {
-                case false:
+                case (true, false, false):
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    Console.Write("[_]");
+                    Console.ResetColor();
+                    return "";
+                case (true, false, true):
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    Console.Write("[*]");
+                    Console.ResetColor();
+                    return "";
+            }
+
+
+            switch (IsPlaced, IsSelected)
+            {
+                case (false, false):
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.Write("[_]");
+                    Console.ResetColor();
+                    return "";
+                case (false, true):
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("[*]");
                     Console.ResetColor();
                     return "";
             }

@@ -10,6 +10,8 @@ namespace OthelloGameBrain
     {
         public (OthelloBrain, BoardSquareState[,]) Navigate(OthelloBrain brain, BoardSquareState[,] board)
         {
+            var validMove = new ValidMoves();
+
             int axisX = 0;
             int axisY = 0;
             var moveDone = false;
@@ -18,6 +20,16 @@ namespace OthelloGameBrain
 
                 // draw board
                 Console.Clear();
+                char[] notation = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+                for (var l = 0; l < board.GetLength(0); l++)
+                {
+                    if (l == 0)
+                        Console.Write("   ");
+                    Console.Write(" " + notation[l] + " ");
+                }
+                Console.WriteLine("");
+
+                validMove.CheckValidMoves(brain, board);
                 OthelloUI.DrawBoard(board);
                 // Starting position of cursor
 
@@ -25,6 +37,10 @@ namespace OthelloGameBrain
                 if (brain.CurrentPlayer == "Black")
                 {
                     Console.WriteLine("-\nBlack to move");
+                }
+                else if (brain.CurrentPlayer == "White")
+                {
+                    Console.WriteLine("-\nWhite to move");
                 }
 
                 var keyInfo = Console.ReadKey();
@@ -71,7 +87,10 @@ namespace OthelloGameBrain
                         {
                             if (brain.CurrentPlayer == "Black")
                             {
-
+                                brain.CurrentPlayer = "White";
+                            } else if (brain.CurrentPlayer == "White")
+                            {
+                                brain.CurrentPlayer = "Black";
                             }
                         }
                         break;
