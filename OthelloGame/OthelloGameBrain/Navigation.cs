@@ -8,12 +8,11 @@ namespace OthelloGameBrain
 {
     public class Navigation
     {
-        public (OthelloBrain, BoardSquareState[,]) Navigate(OthelloBrain brain, BoardSquareState[,] board)
+        public (OthelloBrain, BoardSquareState[,]) Navigate(OthelloBrain brain, BoardSquareState[,] board, int axisX, int axisY)
         {
             var validMove = new ValidMoves();
 
-            int axisX = 0;
-            int axisY = 0;
+            
             var moveDone = false;
             do
             {
@@ -42,6 +41,8 @@ namespace OthelloGameBrain
                 {
                     Console.WriteLine("-\nWhite to move");
                 }
+
+                var playerColor = brain.CurrentPlayer;
 
                 var keyInfo = Console.ReadKey();
                 switch (keyInfo.Key)
@@ -83,16 +84,26 @@ namespace OthelloGameBrain
                         board[axisX, axisY].IsSelected = true;
                         break;
                     case ConsoleKey.Enter:
-                        if (board[axisX, axisY].IsPlaced == false)
+                        if (board[axisX, axisY].IsValid)
                         {
-                            if (brain.CurrentPlayer == "Black")
+                            board[axisX, axisY].IsPlaced = true;
+                            board[axisX, axisY].PlayerColor = playerColor;
+                            for (var x = 1; x < board.GetLength(0) - axisX; x++)
                             {
-                                brain.CurrentPlayer = "White";
-                            } else if (brain.CurrentPlayer == "White")
-                            {
-                                brain.CurrentPlayer = "Black";
+                                if (board[axisX + x, axisY].IsPlaced &&
+                                    board[axisX + x, axisY].PlayerColor != playerColor)
+                                {
+                                    board[axisX + x, axisY].PlayerColor = playerColor;
+                                    moveDone = true;
+                                }
+                                else
+                                {
+                                    break;
+                                }
                             }
                         }
+
+                        
                         break;
                 }
                 // if player can move
@@ -119,6 +130,17 @@ namespace OthelloGameBrain
                 // else
                 // switch player
 
+                if (moveDone)
+                {
+                    if (brain.CurrentPlayer == "Black")
+                    {
+                        brain.CurrentPlayer = "White";
+                    }
+                    else if (brain.CurrentPlayer == "White")
+                    {
+                        brain.CurrentPlayer = "Black";
+                    }
+                }
             } while (moveDone == false);
             return (brain, board);
         }

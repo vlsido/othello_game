@@ -9,16 +9,17 @@ using Microsoft.VisualBasic;
 
 namespace OthelloGameBrain
 {
-    public class ValidMoves
+    public class ValidMoves : ICloneable
     {
-        public List<BoardSquareState[,]> Squares { get; set; }
+        public List<BoardSquareState> Squares { get; set; }
 
+        public object Clone() { return this.MemberwiseClone(); }
         public ValidMoves()
         {
-            Squares = new List<BoardSquareState[,]>();
+            Squares = new List<BoardSquareState>();
         }
 
-        public void AddSquare(BoardSquareState[,] square)
+        public void AddSquare(BoardSquareState square)
         {
             Squares.Add(square);
         }
@@ -31,6 +32,8 @@ namespace OthelloGameBrain
                 board[x, y].IsValid = false;
             
             var playerColor = "";
+
+            var coordinates = new Coordinates();
 
             var checkHorizontally = true;
             var checkFurtherRight = true;
@@ -57,12 +60,24 @@ namespace OthelloGameBrain
 
             var squareRight = 0;
             var squareLeft = 0;
+            var placedRight = 0;
+            var placedLeft = 0;
             var squareUp = 0;
             var squareDown = 0;
             var squareUpRight = 0;
             var squareUpLeft = 0;
             var squareDownRight = 0;
             var squareDownLeft = 0;
+
+
+            // Square dobavit v lineSquares
+
+            // TODO: добавить линии квадратов от ВалидМува до ФаундСквер, записать их все лист
+            // if (linesOfSquares[i][n].X == x && .Y == y)
+            // linesOfSquares[i] place not placed and flip opponent pieces
+
+            List<List<BoardSquareState>> linesOfSquares = new List<List<BoardSquareState>>();
+            List<BoardSquareState> squares = new List<BoardSquareState>();
 
             if (brain.CurrentPlayer == "Black")
             {
@@ -94,13 +109,14 @@ namespace OthelloGameBrain
                                         if (checkFurtherRight)
                                         {
                                             if (x + i < board.GetLength(0))
-                                            { 
+                                            {
                                                 if (board[x + i, y].PlayerColor != playerColor && board[x + i, y].IsPlaced)
                                                 {
                                                 }
                                                 else if (board[x + i, y].PlayerColor == playerColor && board[x + i, y].IsPlaced)
                                                 {
                                                     foundRight = true;
+                                                    placedRight = i;
                                                     checkFurtherRight = false;
                                                     break;
                                                 }
@@ -126,230 +142,296 @@ namespace OthelloGameBrain
                                                 else if (board[x - i, y].PlayerColor == playerColor && board[x - i, y].IsPlaced)
                                                 {
                                                     foundLeft = true;
+                                                    placedLeft = i;
                                                     checkFurtherLeft = false;
                                                 }
                                                 else
                                                 {
                                                     squareLeft = i;
                                                     checkFurtherLeft = false;
+                                                    break;
                                                 }
                                             }
                                         }
                                     }
 
-                                    if (foundRight || foundLeft)
-                                    {
-                                        if (board[x + squareRight, y].IsPlaced == false)
-                                        {
-                                            board[x + squareRight, y].IsValid = true;
-                                        }
+                                    
 
-                                        if (board[x - squareLeft, y].IsPlaced == false)
-                                        {
-                                            board[x - squareLeft, y].IsValid = true;
-                                        }
-                                    }
+                                    
                             }
 
                             if (checkVertically)
                             {
-                                    for (var i = 0; i < board.GetLength(1); i++)
+                                for (var i = 0; i < board.GetLength(1); i++)
+                                {
+                                    if (checkFurtherUp)
                                     {
-                                        if (checkFurtherUp)
+                                        if (y + i < board.GetLength(1))
                                         {
-                                            if (y + i < board.GetLength(1))
+                                            if (board[x, y + i].PlayerColor != playerColor && board[x, y + i].IsPlaced)
                                             {
-                                                if (board[x, y + i].PlayerColor != playerColor && board[x, y + i].IsPlaced)
-                                                {
-                                                }
-                                                else if (board[x, y + i].PlayerColor == playerColor && board[x, y + i].IsPlaced)
-                                                {
-                                                    foundUp = true;
-                                                    checkFurtherUp = false;
-                                                }
-                                                else
-                                                {
-                                                    squareUp = i;
-                                                    checkFurtherUp = false; ;
-                                                }
+                                            }
+                                            else if (board[x, y + i].PlayerColor == playerColor && board[x, y + i].IsPlaced)
+                                            {
+                                                foundUp = true;
+                                                checkFurtherUp = false;
+                                            }
+                                            else
+                                            {
+                                                squareUp = i;
+                                                checkFurtherUp = false; ;
                                             }
                                         }
                                     }
+                                }
 
-                                    for (var i = 0; i < board.GetLength(1); i++)
+                                for (var i = 0; i < board.GetLength(1); i++)
+                                {
+                                    if (checkFurtherDown)
                                     {
-                                        if (checkFurtherDown)
+                                        if ((y - i) >= 0)
                                         {
-                                            if ((y - i) >= 0)
+                                            if (board[x, y - i].PlayerColor != playerColor && board[x, y - i].IsPlaced)
                                             {
-                                                if (board[x, y - i].PlayerColor != playerColor && board[x, y - i].IsPlaced)
-                                                {
-                                                }
-                                                else if (board[x, y - i].PlayerColor == playerColor && board[x, y - i].IsPlaced)
-                                                {
-                                                    foundDown = true;
-                                                    checkFurtherDown = false;
-                                                }
-                                                else
-                                                {
-                                                    squareDown = i;
-                                                    checkFurtherDown = false;
-                                                }
+                                            }
+                                            else if (board[x, y - i].PlayerColor == playerColor && board[x, y - i].IsPlaced)
+                                            {
+                                                foundDown = true;
+                                                checkFurtherDown = false;
+                                            }
+                                            else
+                                            {
+                                                squareDown = i;
+                                                checkFurtherDown = false;
                                             }
                                         }
                                     }
-                                    if (foundUp || foundDown)
+                                }
+                                if (foundUp || foundDown)
+                                {
+                                    if (board[x, y + squareUp].IsPlaced == false)
                                     {
-                                        if (board[x, y + squareUp].IsPlaced == false)
-                                        {
-                                            board[x, y + squareUp].IsValid = true;
-                                        }
-
-                                        if (board[x, y - squareDown].IsPlaced == false)
-                                        {
-                                            board[x, y - squareDown].IsValid = true;
-                                        }
+                                        board[x, y + squareUp].IsValid = true;
                                     }
+
+                                    if (board[x, y - squareDown].IsPlaced == false)
+                                    {
+                                        board[x, y - squareDown].IsValid = true;
+                                    }
+                                }
+
+                                
                             }
 
                             if (checkDiagonallySlashWise)
                             {
-                                    for (var i = 0; i < board.GetLength(0); i++)
+                                for (var i = 0; i < board.GetLength(0); i++)
+                                {
+                                    if (checkFurtherUpRight)
                                     {
-                                        if (checkFurtherUpRight)
+                                        if (x + i < board.GetLength(0) && y + i < board.GetLength(1))
                                         {
-                                            if (x + i < board.GetLength(0) && y + i < board.GetLength(1))
+                                            if (board[x + i, y + i].PlayerColor != playerColor && board[x + i, y + i].IsPlaced)
                                             {
-                                                if (board[x + i, y + i].PlayerColor != playerColor && board[x + i, y + i].IsPlaced)
-                                                {
-                                                }
-                                                else if (board[x + i, y + i].PlayerColor == playerColor && board[x + i, y + i].IsPlaced)
-                                                {
-                                                    foundUpRight = true;
-                                                    checkFurtherUpRight = false;
-                                                }
-                                                else
-                                                {
-                                                    squareUpRight = i;
-                                                    checkFurtherUpRight = false;
-                                                }
+                                            }
+                                            else if (board[x + i, y + i].PlayerColor == playerColor && board[x + i, y + i].IsPlaced)
+                                            {
+                                                foundUpRight = true;
+                                                checkFurtherUpRight = false;
+                                            }
+                                            else
+                                            {
+                                                squareUpRight = i;
+                                                checkFurtherUpRight = false;
                                             }
                                         }
                                     }
+                                }
 
-                                    for (var i = 0; i < board.GetLength(0); i++)
+                                for (var i = 0; i < board.GetLength(0); i++)
+                                {
+                                    if (checkFurtherDownLeft)
                                     {
-                                        if (checkFurtherDownLeft)
+                                        if ((x - i) >= 0 && (y - i) >= 0)
                                         {
-                                            if ((x - i) >= 0 && (y - i) >= 0)
+                                            if (board[x - i, y - i].PlayerColor != playerColor && board[x - i, y - i].IsPlaced)
                                             {
-                                                if (board[x - i, y - i].PlayerColor != playerColor && board[x - i, y - i].IsPlaced)
-                                                {
-                                                }
-                                                else if (board[x - i, y - i].PlayerColor == playerColor && board[x - i, y - i].IsPlaced)
-                                                {
-                                                    foundDownLeft = true;
-                                                    checkFurtherDownLeft = false;
-                                                }
-                                                else
-                                                {
-                                                    squareDownLeft = i;
-                                                    checkFurtherDownLeft = false;
-                                                }
+                                            }
+                                            else if (board[x - i, y - i].PlayerColor == playerColor && board[x - i, y - i].IsPlaced)
+                                            {
+                                                foundDownLeft = true;
+                                                checkFurtherDownLeft = false;
+                                            }
+                                            else
+                                            {
+                                                squareDownLeft = i;
+                                                checkFurtherDownLeft = false;
                                             }
                                         }
                                     }
-                                    if (foundUpRight || foundDownLeft)
+                                }
+                                if (foundUpRight || foundDownLeft)
+                                {
+                                    if (board[x + squareUpRight, y + squareUpRight].IsPlaced == false)
                                     {
-                                        if (board[x + squareUpRight, y + squareUpRight].IsPlaced == false)
-                                        {
-                                            board[x + squareUpRight, y + squareUpRight].IsValid = true;
-                                        }
-
-                                        if (board[x - squareDownLeft, y - squareDownLeft].IsPlaced == false)
-                                        {
-                                            board[x - squareDownLeft, y - squareDown].IsValid = true;
-                                        }
+                                        board[x + squareUpRight, y + squareUpRight].IsValid = true;
                                     }
+
+                                    if (board[x - squareDownLeft, y - squareDownLeft].IsPlaced == false)
+                                    {
+                                        board[x - squareDownLeft, y - squareDown].IsValid = true;
+                                    }
+                                }
+                                
                             }
 
                             if (checkDiagonallyBackSlashWise)
                             {
-                                    for (var i = 0; i < board.GetLength(0); i++)
+                                for (var i = 0; i < board.GetLength(0); i++)
+                                {
+                                    if (checkFurtherUpLeft)
                                     {
-                                        if (checkFurtherUpLeft)
+                                        if ((x - i) >= 0 && y + i < board.GetLength(1))
                                         {
-                                            if ((x - i) >= 0 && y + i < board.GetLength(1))
+                                            if (board[x - i, y + i].PlayerColor != playerColor && board[x - i, y + i].IsPlaced)
                                             {
-                                                if (board[x - i, y + i].PlayerColor != playerColor && board[x - i, y + i].IsPlaced)
-                                                {
-                                                }
-                                                else if (board[x - i, y + i].PlayerColor == playerColor && board[x - i, y + i].IsPlaced)
-                                                {
-                                                    foundUpLeft = true;
-                                                    checkFurtherUpLeft = false;
-                                                }
-                                                else
-                                                {
-                                                    squareUpLeft = i;
-                                                    checkFurtherUpLeft = false;
-                                                }
+                                            }
+                                            else if (board[x - i, y + i].PlayerColor == playerColor && board[x - i, y + i].IsPlaced)
+                                            {
+                                                foundUpLeft = true;
+                                                checkFurtherUpLeft = false;
+                                            }
+                                            else
+                                            {
+                                                squareUpLeft = i;
+                                                checkFurtherUpLeft = false;
                                             }
                                         }
                                     }
+                                }
 
-                                    for (var i = 0; i < board.GetLength(0); i++)
+                                for (var i = 0; i < board.GetLength(0); i++)
+                                {
+                                    if (checkFurtherDownRight)
                                     {
-                                        if (checkFurtherDownRight)
+                                        if ((x + i) < board.GetLength(0) && (y - i) >= 0)
                                         {
-                                            if ((x + i) < board.GetLength(0) && (y - i) >= 0)
+                                            if (board[x + i, y - i].PlayerColor != playerColor && board[x + i, y - i].IsPlaced)
                                             {
-                                                if (board[x + i, y - i].PlayerColor != playerColor && board[x + i, y - i].IsPlaced)
-                                                {
-                                                }
-                                                else if (board[x + i, y - i].PlayerColor == playerColor && board[x + i, y - i].IsPlaced)
-                                                {
-                                                    foundDownRight = true;
-                                                    checkFurtherDownRight = false;
-                                                }
-                                                else
-                                                {
-                                                    squareDownRight = i;
-                                                    checkFurtherDownRight = false;
-                                                }
+                                            }
+                                            else if (board[x + i, y - i].PlayerColor == playerColor && board[x + i, y - i].IsPlaced)
+                                            {
+                                                foundDownRight = true;
+                                                checkFurtherDownRight = false;
+                                            }
+                                            else
+                                            {
+                                                squareDownRight = i;
+                                                checkFurtherDownRight = false;
                                             }
                                         }
                                     }
-                                    if (foundUpLeft || foundDownRight)
+                                }
+                                if (foundUpLeft || foundDownRight)
+                                {
+                                    if (board[x - squareUpLeft, y + squareUpLeft].IsPlaced == false)
                                     {
-                                        if (board[x - squareUpLeft, y + squareUpLeft].IsPlaced == false)
-                                        {
-                                            board[x + squareUpLeft, y - squareUpLeft].IsValid = true;
-                                        }
-
-                                        if (board[x - squareDownRight, y + squareDownRight].IsPlaced == false)
-                                        {
-                                            board[x + squareDownRight, y - squareDownRight].IsValid = true;
-                                        }
+                                        board[x + squareUpLeft, y - squareUpLeft].IsValid = true;
                                     }
+
+                                    if (board[x - squareDownRight, y + squareDownRight].IsPlaced == false)
+                                    {
+                                        board[x + squareDownRight, y - squareDownRight].IsValid = true;
+                                    }
+                                }
+                                
                             }
+
+                            checkFurtherRight = true;
+                            checkFurtherLeft = true;
                             
 
+                            checkFurtherUp = true;
+                            checkFurtherDown = true;
+
+                            checkFurtherDownLeft = true;
+                            checkFurtherUpRight = true;
+
+                            checkFurtherUpLeft = true;
+                            checkFurtherDownRight = true;
 
                         }
 
-                        checkFurtherRight = true;
-                        checkFurtherLeft = true;
-                        checkFurtherUp = true;
-                        checkFurtherDown = true;
-                        checkFurtherDownLeft = true;
-                        checkFurtherDownRight = true;
-                        checkFurtherUpRight = true;
-                        checkFurtherUpLeft = true;
 
+
+
+
+                            if (foundRight || foundLeft)
+                            {
+                                if (board[x + squareRight, y].IsPlaced == false)
+                                {
+                                    board[x + squareRight, y].IsValid = true;
+                                }
+
+                                if (foundRight)
+                                {
+                                    for (var i = squareLeft; i >= 0; i--)
+                                    {
+                                        board[x - i, y].X = x - i;
+                                        board[x - i, y].Y = y;
+                                        squares.Add(board[x - i, y]);
+                                    }
+
+                                    for (var i = 1; i <= placedRight; i++)
+                                    {
+                                        board[x + i, y].X = x + i;
+                                        board[x + i, y].Y = y;
+                                        squares.Add(board[x + i, y]);
+                                    }
+
+                                    linesOfSquares.Add(new List<BoardSquareState>(squares));
+                                    squares.Clear();
+                                }
+
+                                if (board[x - squareLeft, y].IsPlaced == false)
+                                {
+                                    board[x - squareLeft, y].IsValid = true;
+                                }
+
+                                if (foundLeft)
+                                {
+                                    for (var i = placedLeft; i <= 0; i--)
+                                    {
+                                        board[x - i, y].X = x - i;
+                                        board[x - i, y].Y = y;
+                                        squares.Add(board[x - i, y]);
+                                    }
+
+                                    for (var i = 1; i <= squareRight; i++)
+                                    {
+                                        board[x + i, y].X = x + i;
+                                        board[x + i, y].Y = y;
+                                        squares.Add(board[x + i, y]);
+                                    }
+                                    linesOfSquares.Add(squares);
+                                    squares.Clear();
+                                }
+
+                            }
+                            foundLeft = false;
+                            foundRight = false;
+
+                            foundUp = false;
+                            foundDown = false;
+
+                            foundUpRight = false;
+                            foundDownLeft = false;
+
+                            foundUpLeft = false;
+                            foundDownRight = false;
                     }
                 }
-
+            
             return board;
         }
     }
