@@ -8,11 +8,11 @@ namespace OthelloGameBrain
 {
     public class Navigation
     {
-        public (OthelloBrain, BoardSquareState[,]) Navigate(OthelloBrain brain, BoardSquareState[,] board, int axisX, int axisY)
+        public (OthelloBrain, BoardSquareState[,]) Navigate(OthelloBrain brain, BoardSquareState[,] board, List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY)
         {
             var validMove = new ValidMoves();
+            validMove.CheckValidMoves(brain, board, linesOfSquares);
 
-            
             var moveDone = false;
             do
             {
@@ -28,7 +28,7 @@ namespace OthelloGameBrain
                 }
                 Console.WriteLine("");
 
-                validMove.CheckValidMoves(brain, board);
+               
                 OthelloUI.DrawBoard(board);
                 // Starting position of cursor
 
@@ -88,19 +88,32 @@ namespace OthelloGameBrain
                         {
                             board[axisX, axisY].IsPlaced = true;
                             board[axisX, axisY].PlayerColor = playerColor;
-                            for (var x = 1; x < board.GetLength(0) - axisX; x++)
+
+                            for (var i = 0; i < linesOfSquares.Count; i++)
                             {
-                                if (board[axisX + x, axisY].IsPlaced &&
-                                    board[axisX + x, axisY].PlayerColor != playerColor)
+                                for (var j = 0; j < linesOfSquares[i].Count; j++)
                                 {
-                                    board[axisX + x, axisY].PlayerColor = playerColor;
-                                    moveDone = true;
-                                }
-                                else
-                                {
-                                    break;
+                                    if (linesOfSquares[i][j].X == axisX && linesOfSquares[i][j].Y == axisY)
+                                    {
+                                        foreach (var item in linesOfSquares[i])
+                                        {
+                                            if (item.IsValid)
+                                            {
+                                                board[item.X, item.Y].IsPlaced = true;
+                                                board[item.X, item.Y].PlayerColor = playerColor;
+                                            }
+
+                                            if (item.PlayerColor != playerColor)
+                                            {
+                                                board[item.X, item.Y].PlayerColor = playerColor;
+                                            }
+                                        }
+                                        
+                                    }
                                 }
                             }
+
+                            moveDone = true;
                         }
 
                         

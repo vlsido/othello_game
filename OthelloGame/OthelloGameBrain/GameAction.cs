@@ -13,6 +13,7 @@ namespace OthelloGameBrain
         {
             var navigation = new Navigation();
             var validMove = new ValidMoves();
+            List<List<BoardSquareState>> linesOfSquares = new List<List<BoardSquareState>>();
 
             var gameOver = false;
 
@@ -55,8 +56,7 @@ namespace OthelloGameBrain
 
             do
             {
-                validMove.CheckValidMoves(brain, board);
-                navigation.Navigate(brain, board, axisX, axisY);
+                navigation.Navigate(brain, board, linesOfSquares, axisX, axisY);
             } while (gameOver == false);
             
             

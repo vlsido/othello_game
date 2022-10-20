@@ -24,7 +24,7 @@ namespace OthelloGameBrain
             Squares.Add(square);
         }
 
-        public BoardSquareState[,] CheckValidMoves(OthelloBrain brain, BoardSquareState[,] board)
+        public (BoardSquareState[,], List<List<BoardSquareState>>) CheckValidMoves(OthelloBrain brain, BoardSquareState[,] board, List<List<BoardSquareState>> linesOfSquares)
         {
             // clean previous valid moves
             for (var x = 0; x < board.GetLength(0); x++)
@@ -62,13 +62,21 @@ namespace OthelloGameBrain
             var squareLeft = 0;
             var placedRight = 0;
             var placedLeft = 0;
+
             var squareUp = 0;
             var squareDown = 0;
+            var placedUp = 0;
+            var placedDown = 0;
+
             var squareUpRight = 0;
             var squareUpLeft = 0;
+            var placedUpRight = 0;
+            var placedUpLeft = 0;
+
             var squareDownRight = 0;
             var squareDownLeft = 0;
-
+            var placedDownRight = 0;
+            var placedDownLeft = 0;
 
             // Square dobavit v lineSquares
 
@@ -76,7 +84,6 @@ namespace OthelloGameBrain
             // if (linesOfSquares[i][n].X == x && .Y == y)
             // linesOfSquares[i] place not placed and flip opponent pieces
 
-            List<List<BoardSquareState>> linesOfSquares = new List<List<BoardSquareState>>();
             List<BoardSquareState> squares = new List<BoardSquareState>();
 
             if (brain.CurrentPlayer == "Black")
@@ -164,7 +171,7 @@ namespace OthelloGameBrain
                             {
                                 for (var i = 0; i < board.GetLength(1); i++)
                                 {
-                                    if (checkFurtherUp)
+                                    if (checkFurtherDown)
                                     {
                                         if (y + i < board.GetLength(1))
                                         {
@@ -173,13 +180,14 @@ namespace OthelloGameBrain
                                             }
                                             else if (board[x, y + i].PlayerColor == playerColor && board[x, y + i].IsPlaced)
                                             {
-                                                foundUp = true;
-                                                checkFurtherUp = false;
+                                                foundDown = true;
+                                                placedDown = i;
+                                                checkFurtherDown = false;
                                             }
                                             else
                                             {
-                                                squareUp = i;
-                                                checkFurtherUp = false; ;
+                                                squareDown = i;
+                                                checkFurtherDown = false; ;
                                             }
                                         }
                                     }
@@ -187,7 +195,7 @@ namespace OthelloGameBrain
 
                                 for (var i = 0; i < board.GetLength(1); i++)
                                 {
-                                    if (checkFurtherDown)
+                                    if (checkFurtherUp)
                                     {
                                         if ((y - i) >= 0)
                                         {
@@ -196,29 +204,19 @@ namespace OthelloGameBrain
                                             }
                                             else if (board[x, y - i].PlayerColor == playerColor && board[x, y - i].IsPlaced)
                                             {
-                                                foundDown = true;
-                                                checkFurtherDown = false;
+                                                foundUp = true;
+                                                placedUp = i;
+                                                checkFurtherUp = false;
                                             }
                                             else
                                             {
-                                                squareDown = i;
-                                                checkFurtherDown = false;
+                                                squareUp = i;
+                                                checkFurtherUp = false;
                                             }
                                         }
                                     }
                                 }
-                                if (foundUp || foundDown)
-                                {
-                                    if (board[x, y + squareUp].IsPlaced == false)
-                                    {
-                                        board[x, y + squareUp].IsValid = true;
-                                    }
-
-                                    if (board[x, y - squareDown].IsPlaced == false)
-                                    {
-                                        board[x, y - squareDown].IsValid = true;
-                                    }
-                                }
+                                
 
                                 
                             }
@@ -229,14 +227,15 @@ namespace OthelloGameBrain
                                 {
                                     if (checkFurtherUpRight)
                                     {
-                                        if (x + i < board.GetLength(0) && y + i < board.GetLength(1))
+                                        if (x + i < board.GetLength(0) && y - i >= 0)
                                         {
-                                            if (board[x + i, y + i].PlayerColor != playerColor && board[x + i, y + i].IsPlaced)
+                                            if (board[x + i, y - i].PlayerColor != playerColor && board[x + i, y - i].IsPlaced)
                                             {
                                             }
-                                            else if (board[x + i, y + i].PlayerColor == playerColor && board[x + i, y + i].IsPlaced)
+                                            else if (board[x + i, y - i].PlayerColor == playerColor && board[x + i, y - i].IsPlaced)
                                             {
                                                 foundUpRight = true;
+                                                placedUpRight = i;
                                                 checkFurtherUpRight = false;
                                             }
                                             else
@@ -252,14 +251,15 @@ namespace OthelloGameBrain
                                 {
                                     if (checkFurtherDownLeft)
                                     {
-                                        if ((x - i) >= 0 && (y - i) >= 0)
+                                        if ((x - i) >= 0 && (y + i) < board.GetLength(1))
                                         {
-                                            if (board[x - i, y - i].PlayerColor != playerColor && board[x - i, y - i].IsPlaced)
+                                            if (board[x - i, y + i].PlayerColor != playerColor && board[x - i, y + i].IsPlaced)
                                             {
                                             }
-                                            else if (board[x - i, y - i].PlayerColor == playerColor && board[x - i, y - i].IsPlaced)
+                                            else if (board[x - i, y + i].PlayerColor == playerColor && board[x - i, y + i].IsPlaced)
                                             {
                                                 foundDownLeft = true;
+                                                placedDownLeft = i;
                                                 checkFurtherDownLeft = false;
                                             }
                                             else
@@ -270,18 +270,7 @@ namespace OthelloGameBrain
                                         }
                                     }
                                 }
-                                if (foundUpRight || foundDownLeft)
-                                {
-                                    if (board[x + squareUpRight, y + squareUpRight].IsPlaced == false)
-                                    {
-                                        board[x + squareUpRight, y + squareUpRight].IsValid = true;
-                                    }
-
-                                    if (board[x - squareDownLeft, y - squareDownLeft].IsPlaced == false)
-                                    {
-                                        board[x - squareDownLeft, y - squareDown].IsValid = true;
-                                    }
-                                }
+                                
                                 
                             }
 
@@ -291,14 +280,15 @@ namespace OthelloGameBrain
                                 {
                                     if (checkFurtherUpLeft)
                                     {
-                                        if ((x - i) >= 0 && y + i < board.GetLength(1))
+                                        if (x - i >= 0 && y - i >= 0)
                                         {
-                                            if (board[x - i, y + i].PlayerColor != playerColor && board[x - i, y + i].IsPlaced)
+                                            if (board[x - i, y - i].PlayerColor != playerColor && board[x - i, y - i].IsPlaced)
                                             {
                                             }
-                                            else if (board[x - i, y + i].PlayerColor == playerColor && board[x - i, y + i].IsPlaced)
+                                            else if (board[x - i, y - i].PlayerColor == playerColor && board[x - i, y - i].IsPlaced)
                                             {
                                                 foundUpLeft = true;
+                                                placedUpLeft = i;
                                                 checkFurtherUpLeft = false;
                                             }
                                             else
@@ -314,15 +304,16 @@ namespace OthelloGameBrain
                                 {
                                     if (checkFurtherDownRight)
                                     {
-                                        if ((x + i) < board.GetLength(0) && (y - i) >= 0)
+                                        if ((x + i) < board.GetLength(0) && (y + i) >= 0)
                                         {
-                                            if (board[x + i, y - i].PlayerColor != playerColor && board[x + i, y - i].IsPlaced)
+                                            if (board[x + i, y + i].PlayerColor != playerColor && board[x + i, y + i].IsPlaced)
                                             {
                                             }
-                                            else if (board[x + i, y - i].PlayerColor == playerColor && board[x + i, y - i].IsPlaced)
+                                            else if (board[x + i, y + i].PlayerColor == playerColor && board[x + i, y + i].IsPlaced)
                                             {
                                                 foundDownRight = true;
                                                 checkFurtherDownRight = false;
+                                                placedDownRight = i;
                                             }
                                             else
                                             {
@@ -332,18 +323,7 @@ namespace OthelloGameBrain
                                         }
                                     }
                                 }
-                                if (foundUpLeft || foundDownRight)
-                                {
-                                    if (board[x - squareUpLeft, y + squareUpLeft].IsPlaced == false)
-                                    {
-                                        board[x + squareUpLeft, y - squareUpLeft].IsValid = true;
-                                    }
-
-                                    if (board[x - squareDownRight, y + squareDownRight].IsPlaced == false)
-                                    {
-                                        board[x + squareDownRight, y - squareDownRight].IsValid = true;
-                                    }
-                                }
+                                
                                 
                             }
 
@@ -391,6 +371,7 @@ namespace OthelloGameBrain
 
                                     linesOfSquares.Add(new List<BoardSquareState>(squares));
                                     squares.Clear();
+                                    foundRight = false;
                                 }
 
                                 if (board[x - squareLeft, y].IsPlaced == false)
@@ -400,7 +381,7 @@ namespace OthelloGameBrain
 
                                 if (foundLeft)
                                 {
-                                    for (var i = placedLeft; i <= 0; i--)
+                                    for (var i = placedLeft; i >= 0; i--)
                                     {
                                         board[x - i, y].X = x - i;
                                         board[x - i, y].Y = y;
@@ -413,26 +394,181 @@ namespace OthelloGameBrain
                                         board[x + i, y].Y = y;
                                         squares.Add(board[x + i, y]);
                                     }
-                                    linesOfSquares.Add(squares);
+                                    linesOfSquares.Add(new List<BoardSquareState>(squares));
                                     squares.Clear();
+                                    foundLeft = false;
                                 }
 
                             }
-                            foundLeft = false;
-                            foundRight = false;
 
-                            foundUp = false;
-                            foundDown = false;
+                            if (foundUp || foundDown)
+                            {
+                                if (board[x, y - squareUp].IsPlaced == false)
+                                {
+                                    board[x, y - squareUp].IsValid = true;
+                                }
 
-                            foundUpRight = false;
-                            foundDownLeft = false;
+                                if (foundUp)
+                                {
+                                    for (var i = placedUp; i >= 0; i--)
+                                    {
+                                        board[x, y - i].X = x;
+                                        board[x, y - i].Y = y - i;
+                                        squares.Add(board[x, y - i]);
+                                    }
 
-                            foundUpLeft = false;
-                            foundDownRight = false;
+                                    for (var i = 1; i <= squareDown; i++)
+                                    {
+                                        board[x, y + i].X = x;
+                                        board[x, y + i].Y = y + i;
+                                        squares.Add(board[x, y + i]);
+                                    }
+
+                                    linesOfSquares.Add(new List<BoardSquareState>(squares));
+                                    squares.Clear();
+                                    foundUp = false;
+                                }
+
+                                if (board[x, y + squareDown].IsPlaced == false)
+                                {
+                                    board[x, y + squareDown].IsValid = true;
+                                }
+
+                                if (foundDown)
+                                {
+                                    for (var i = squareUp; i >= 0; i--)
+                                    {
+                                        board[x, y - i].X = x;
+                                        board[x, y - i].Y = y - i;
+                                        squares.Add(board[x, y - i]);
+                                    }
+
+                                    for (var i = 1; i <= placedDown; i++)
+                                    {
+                                        board[x, y + i].X = x;
+                                        board[x, y + i].Y = y + i;
+                                        squares.Add(board[x, y + i]);
+                                    }
+
+                                    linesOfSquares.Add(new List<BoardSquareState>(squares));
+                                    squares.Clear();
+                                    foundDown = false;
+                                }
+                            }
+
+                            if (foundUpRight || foundDownLeft)
+                            {
+                                if (board[x + squareUpRight, y - squareUpRight].IsPlaced == false)
+                                {
+                                    board[x + squareUpRight, y - squareUpRight].IsValid = true;
+                                }
+
+                                if (foundUpRight)
+                                {
+                                    for (var i = squareDownLeft; i >= 0; i--)
+                                    {
+                                        board[x - i, y + i].X = x - i;
+                                        board[x - i, y + i].Y = y + i;
+                                        squares.Add(board[x - i, y + i]);
+                                    }
+
+                                    for (var i = 1; i <= placedUpRight; i++)
+                                    {
+                                        board[x + i, y - i].X = x + i;
+                                        board[x + i, y - i].Y = y - i;
+                                        squares.Add(board[x + i, y - i]);
+                                    }
+
+                                    linesOfSquares.Add(new List<BoardSquareState>(squares));
+                                    squares.Clear();
+                                    foundUpRight = false;
+                                }
+
+                                if (board[x - squareDownLeft, y + squareDownLeft].IsPlaced == false)
+                                {
+                                    board[x - squareDownLeft, y + squareDownLeft].IsValid = true;
+                                }
+
+                                if (foundDownLeft)
+                                {
+                                    for (var i = placedDownLeft; i >= 0; i--)
+                                    {
+                                        board[x - i, y + i].X = x - i;
+                                        board[x - i, y + i].Y = y + i;
+                                        squares.Add(board[x - i, y + i]);
+                                    }
+
+                                    for (var i = 1; i <= squareUpRight; i++)
+                                    {
+                                        board[x + i, y - i].X = x + i;
+                                        board[x + i, y - i].Y = y - i;
+                                        squares.Add(board[x + i, y - i]);
+                                    }
+
+                                    linesOfSquares.Add(new List<BoardSquareState>(squares));
+                                    squares.Clear();
+                                    foundDownLeft = false;
+                                }
+                            }
+
+                            if (foundUpLeft || foundDownRight)
+                            {
+                                if (board[x - squareUpLeft, y - squareUpLeft].IsPlaced == false)
+                                {
+                                    board[x - squareUpLeft, y - squareUpLeft].IsValid = true;
+                                }
+
+                                if (foundUpLeft)
+                                {
+                                    for (var i = placedUpLeft; i >= 0; i--)
+                                    {
+                                        board[x - i, y - i].X = x - i;
+                                        board[x - i, y - i].Y = y - i;
+                                        squares.Add(board[x - i, y - i]);
+                                    }
+
+                                    for (var i = 1; i <= squareDownRight; i++)
+                                    {
+                                        board[x + i, y + i].X = x + i;
+                                        board[x + i, y + i].Y = y + i;
+                                        squares.Add(board[x + i, y + i]);
+                                    }
+
+                                    linesOfSquares.Add(new List<BoardSquareState>(squares));
+                                    squares.Clear();
+                                    foundUpLeft = false;
+                                }
+
+                                if (board[x + squareDownRight, y + squareDownRight].IsPlaced == false)
+                                {
+                                    board[x + squareDownRight, y + squareDownRight].IsValid = true;
+                                }
+
+                                if (foundDownRight)
+                                {
+                                    for (var i = squareUpLeft; i >= 0; i--)
+                                    {
+                                        board[x - i, y - i].X = x - i;
+                                        board[x - i, y - i].Y = y - i;
+                                        squares.Add(board[x - i, y - i]);
+                                    }
+
+                                    for (var i = 1; i <= placedDownRight; i++)
+                                    {
+                                        board[x + i, y + i].X = x + i;
+                                        board[x + i, y + i].Y = y + i;
+                                        squares.Add(board[x + i, y + i]);
+                                    }
+
+                                    linesOfSquares.Add(new List<BoardSquareState>(squares));
+                                    squares.Clear();
+                                    foundDownRight = false;
+                                }
+                            }
                     }
                 }
             
-            return board;
+            return (board, linesOfSquares);
         }
     }
 }
