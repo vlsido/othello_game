@@ -8,7 +8,7 @@ namespace OthelloGameBrain
 {
     public class Navigation
     {
-        public (OthelloBrain, BoardSquareState[,]) Navigate(OthelloBrain brain, BoardSquareState[,] board, List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY)
+        public (OthelloBrain, BoardSquareState[,], int, int, string) Navigate(OthelloBrain brain, BoardSquareState[,] board, List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY, string winner)
         {
             var validMove = new ValidMoves();
             validMove.CheckValidMoves(brain, board, linesOfSquares);
@@ -41,6 +41,16 @@ namespace OthelloGameBrain
                 {
                     Console.WriteLine("-\nWhite to move");
                 }
+
+                int whiteScore = 0;
+                int blackScore = 0;
+                int leftSquares = 0;
+                var score = new CountScore();
+
+                (whiteScore, blackScore, winner) = score.Score(board, whiteScore, blackScore, winner, leftSquares);
+
+                Console.WriteLine($"Black score: {blackScore}");
+                Console.WriteLine($"White score: {whiteScore}");
 
                 var playerColor = brain.CurrentPlayer;
 
@@ -154,8 +164,10 @@ namespace OthelloGameBrain
                         brain.CurrentPlayer = "Black";
                     }
                 }
+                (whiteScore, blackScore, winner) = score.Score(board, whiteScore, blackScore, winner, leftSquares);
             } while (moveDone == false);
-            return (brain, board);
+
+            return (brain, board, axisX, axisY, winner);
         }
     }
 }

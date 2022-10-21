@@ -56,8 +56,11 @@ namespace OthelloGameBrain
 
             string StartGame()
             {
+                int axisX = 0;
+                int axisY = 0;
+                string winner = "null";
                 var game = new GameAction();
-                game.Start(brain, board, boardSize);
+                game.Start(brain, board, boardSize, axisX, axisY, winner);
                 return "";
             }
 

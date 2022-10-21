@@ -9,19 +9,18 @@ namespace OthelloGameBrain
     public class GameAction
     {
         // TODO: Get boards, check if valid move, place piece, flip pieces, check if game over, check if player can move, switch player, repeat
-        public string Start(OthelloBrain brain, BoardSquareState[,] board, BoardSize boardSize)
+        public string Start(OthelloBrain brain, BoardSquareState[,] board, BoardSize boardSize, int axisX, int axisY, string winner)
         {
             var navigation = new Navigation();
-            var validMove = new ValidMoves();
+
+           
             List<List<BoardSquareState>> linesOfSquares = new List<List<BoardSquareState>>();
 
             var gameOver = false;
 
-            int axisX = 0;
-            int axisY = 0;
             brain.GetBoard();
          
-            board[0, 0].IsSelected = true;
+            board[axisX, axisY].IsSelected = true;
             
             
             // if default settings
@@ -56,10 +55,25 @@ namespace OthelloGameBrain
 
             do
             {
-                navigation.Navigate(brain, board, linesOfSquares, axisX, axisY);
+                (brain, board, axisX, axisY, winner) = navigation.Navigate(brain, board, linesOfSquares, axisX, axisY, winner);
+                if (winner != "null")
+                {
+                    
+
+                    gameOver = true;
+                }
             } while (gameOver == false);
-            
-            
+
+            if (winner == "Black")
+            {
+                Console.WriteLine("Black won!");
+            }
+            else if (winner == "White")
+            {
+                Console.WriteLine("White won!");
+            }
+
+            Thread.Sleep(1000000);
             return "";
         }
     }
