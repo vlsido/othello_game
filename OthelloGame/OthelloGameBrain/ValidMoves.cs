@@ -85,6 +85,7 @@ namespace OthelloGameBrain
             // linesOfSquares[i] place not placed and flip opponent pieces
 
             List<BoardSquareState> squares = new List<BoardSquareState>();
+            linesOfSquares.Clear();
 
             if (brain.CurrentPlayer == "Black")
             {
@@ -119,19 +120,18 @@ namespace OthelloGameBrain
                                             {
                                                 if (board[x + i, y].PlayerColor != playerColor && board[x + i, y].IsPlaced)
                                                 {
+                                                    
                                                 }
                                                 else if (board[x + i, y].PlayerColor == playerColor && board[x + i, y].IsPlaced)
                                                 {
                                                     foundRight = true;
                                                     placedRight = i;
                                                     checkFurtherRight = false;
-                                                    break;
                                                 }
-                                                else
+                                                else if (!board[x + i, y].IsPlaced)
                                                 {
                                                     squareRight = i;
                                                     checkFurtherRight = false;
-                                                    break;
                                                 }
                                             }
                                         }
@@ -156,7 +156,6 @@ namespace OthelloGameBrain
                                                 {
                                                     squareLeft = i;
                                                     checkFurtherLeft = false;
-                                                    break;
                                                 }
                                             }
                                         }
@@ -187,7 +186,7 @@ namespace OthelloGameBrain
                                             else
                                             {
                                                 squareDown = i;
-                                                checkFurtherDown = false; ;
+                                                checkFurtherDown = false;
                                             }
                                         }
                                     }
@@ -304,7 +303,7 @@ namespace OthelloGameBrain
                                 {
                                     if (checkFurtherDownRight)
                                     {
-                                        if ((x + i) < board.GetLength(0) && (y + i) >= 0)
+                                        if ((x + i) < board.GetLength(0) && (y + i) < board.GetLength(1))
                                         {
                                             if (board[x + i, y + i].PlayerColor != playerColor && board[x + i, y + i].IsPlaced)
                                             {
@@ -565,6 +564,15 @@ namespace OthelloGameBrain
                                     foundDownRight = false;
                                 }
                             }
+
+                            squareRight = 0;
+                            squareLeft = 0;
+                            squareUp = 0;
+                            squareDown = 0;
+                            squareUpRight = 0;
+                            squareUpLeft = 0;
+                            squareDownRight = 0;
+                            squareDownLeft = 0;
                     }
                 }
             
