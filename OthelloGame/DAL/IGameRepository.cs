@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OthelloGameBrain
+namespace DAL
 {
-    public class Coordinates
+    public interface IGameRepository
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+
     }
+
 }

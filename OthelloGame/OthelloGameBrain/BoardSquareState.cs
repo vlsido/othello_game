@@ -14,7 +14,6 @@ namespace OthelloGameBrain
         public bool IsSelected { get; set; }
         public bool IsValid { get; set; }
         public bool IsFileNotation { get; set; }
-        public bool ToFlip { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
 

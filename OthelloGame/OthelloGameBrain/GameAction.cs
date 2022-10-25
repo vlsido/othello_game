@@ -9,7 +9,7 @@ namespace OthelloGameBrain
     public class GameAction
     {
         // TODO: Get boards, check if valid move, place piece, flip pieces, check if game over, check if player can move, switch player, repeat
-        public string Start(OthelloBrain brain, BoardSquareState[,] board, BoardSize boardSize, int axisX, int axisY, string winner)
+        public string Start(OthelloBrain brain, BoardSquareState[,] board, BoardSize boardSize, int axisX, int axisY, string winner, int whiteScore, int blackScore)
         {
             var navigation = new Navigation();
 
@@ -55,14 +55,16 @@ namespace OthelloGameBrain
 
             do
             {
-                (brain, board, axisX, axisY, winner) = navigation.Navigate(brain, board, linesOfSquares, axisX, axisY, winner);
+                (brain, board, axisX, axisY, winner) = navigation.Navigate(brain, board, linesOfSquares, axisX, axisY,
+                    winner, blackScore, whiteScore);
                 if (winner != "null")
                 {
-                    
-
                     gameOver = true;
                 }
             } while (gameOver == false);
+
+            Console.Clear();
+            OthelloUI.DrawBoard(board);
 
             if (winner == "Black")
             {
@@ -71,6 +73,9 @@ namespace OthelloGameBrain
             else if (winner == "White")
             {
                 Console.WriteLine("White won!");
+            } else if (winner == "Tie")
+            {
+                Console.WriteLine("Game ended in tie!");
             }
 
             Thread.Sleep(1000000);

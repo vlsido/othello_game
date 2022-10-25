@@ -8,10 +8,36 @@ namespace OthelloGameBrain
 {
     public class Navigation
     {
-        public (OthelloBrain, BoardSquareState[,], int, int, string) Navigate(OthelloBrain brain, BoardSquareState[,] board, List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY, string winner)
+        public (OthelloBrain, BoardSquareState[,], int, int, string) Navigate(OthelloBrain brain, BoardSquareState[,] board, 
+            List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY, string winner, int blackScore, int whiteScore)
         {
             var validMove = new ValidMoves();
+            var validCount = 0;
+            var changed = false;
+
+            // TODO: если все плейсед, то чек счёт
+
+            // First check
             validMove.CheckValidMoves(brain, board, linesOfSquares);
+            for (var x = 0; x < board.GetLength(0); x++)
+            {
+                for (var y = 0; y < board.GetLength(1); y++)
+                {
+                    if (board[x, y].IsValid)
+                    {
+                        validCount += 1;
+                    }
+                }
+            }
+
+            
+
+            
+
+            int leftSquares = 0;
+            var score = new CountScore();
+
+            
 
             var moveDone = false;
             do
@@ -30,7 +56,8 @@ namespace OthelloGameBrain
 
                
                 OthelloUI.DrawBoard(board);
-                // Starting position of cursor
+
+                
 
                 // check if player can move
                 if (brain.CurrentPlayer == "Black")
@@ -41,16 +68,12 @@ namespace OthelloGameBrain
                 {
                     Console.WriteLine("-\nWhite to move");
                 }
-
-                int whiteScore = 0;
-                int blackScore = 0;
-                int leftSquares = 0;
-                var score = new CountScore();
-
                 (whiteScore, blackScore, winner) = score.Score(board, whiteScore, blackScore, winner, leftSquares);
 
                 Console.WriteLine($"Black score: {blackScore}");
                 Console.WriteLine($"White score: {whiteScore}");
+
+
 
                 var playerColor = brain.CurrentPlayer;
 
@@ -128,6 +151,8 @@ namespace OthelloGameBrain
 
                         
                         break;
+                    case ConsoleKey.P:
+                        break;
                 }
                 // if player can move
                 // player moves
@@ -164,7 +189,7 @@ namespace OthelloGameBrain
                         brain.CurrentPlayer = "Black";
                     }
                 }
-                (whiteScore, blackScore, winner) = score.Score(board, whiteScore, blackScore, winner, leftSquares);
+                
             } while (moveDone == false);
 
             return (brain, board, axisX, axisY, winner);

@@ -10,8 +10,8 @@ namespace OthelloGameBrain
     {
         public (int, int, string) Score(BoardSquareState[,] board, int blackScore, int whiteScore, string winner, int leftSquares)
         {
-        
-
+            blackScore = 0;
+            whiteScore = 0;
             for (var x = 0; x < board.GetLength(0); x++)
             {
                 for (int y = 0; y < board.GetLength(1); y++)

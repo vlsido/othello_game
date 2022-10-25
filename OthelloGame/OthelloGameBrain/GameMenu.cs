@@ -4,14 +4,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL;
+using DAL.FileSystem;
 
-// TODO: implement "start game" method
+
 namespace OthelloGameBrain
 {
     public class GameMenu
     {
         public void MainMenu()
         {
+            //
+            IGameOptionsRepository repo = new GameOptionsRepositoryFileSystem();
+            var options = repo.GetGameOptionsList(); 
+            foreach (var option in options)
+            {
+                Console.WriteLine(option);
+            }
+
+            Thread.Sleep(100000);
             var brain = new OthelloBrain(8, 8);
             var board = brain.GetBoard();
             var boardSize = new BoardSize();
@@ -58,9 +69,11 @@ namespace OthelloGameBrain
             {
                 int axisX = 0;
                 int axisY = 0;
+                int whiteScore = 0;
+                int blackScore = 0;
                 string winner = "null";
                 var game = new GameAction();
-                game.Start(brain, board, boardSize, axisX, axisY, winner);
+                game.Start(brain, board, boardSize, axisX, axisY, winner, blackScore, whiteScore);
                 return "";
             }
 

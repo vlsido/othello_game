@@ -8,8 +8,10 @@ namespace OthelloGameBrain
 {
     public class Options
     {
-        // todo: default settings (piece position)
-        
+        public int Width { get; set; } = 8;
+        public int Height { get; set; } = 8;
+        public bool WhiteStarts { get; set; } = true;
+
         public BoardSquareState[,] DefaultOptions(BoardSquareState[,] board)
         {
             
