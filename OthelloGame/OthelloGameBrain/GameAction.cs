@@ -9,7 +9,7 @@ namespace OthelloGameBrain
     public class GameAction
     {
         // TODO: Get boards, check if valid move, place piece, flip pieces, check if game over, check if player can move, switch player, repeat
-        public string Start(OthelloBrain brain, BoardSquareState[,] board, BoardSize boardSize, int axisX, int axisY, string winner, int whiteScore, int blackScore)
+        public string Start(OthelloBrain brain, BoardSquareState[,] board, int axisX, int axisY, string winner, int whiteScore, int blackScore)
         {
             var navigation = new Navigation();
 

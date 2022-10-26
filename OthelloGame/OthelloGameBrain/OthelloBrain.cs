@@ -17,8 +17,8 @@ namespace OthelloGameBrain
 
         private readonly Random _rnd = new();
 
-        public int BoardSizeHorizontal { get; set; } = 8;
-        public int BoardSizeVertical { get; set; } = 8;
+        public int BoardSizeHorizontal { get; set; }
+        public int BoardSizeVertical { get; set; } 
 
         public OthelloBrain(int boardSizeHorizontal, int boardSizeVertical)
         {

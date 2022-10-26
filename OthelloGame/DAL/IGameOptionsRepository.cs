@@ -1,5 +1,9 @@
 ﻿
 
+
+
+using Domain;
+
 namespace DAL;
 
 public interface IGameOptionsRepository
@@ -11,11 +15,11 @@ public interface IGameOptionsRepository
 
     // read
     List<string> GetGameOptionsList();
-    //OthelloOption GetGameOptions(string id);
+    OthelloOption GetGameOptions(string id);
 
-    //// create and update
-    //void SaveGameOptions(string id, OthelloOption option);
+    // create and update
+    void SaveGameOptions(string id, OthelloOption option);
 
-    //// delete
-    //void DeleteGameOptions(string id);
+    // delete
+    void DeleteGameOptions(string id);
 }

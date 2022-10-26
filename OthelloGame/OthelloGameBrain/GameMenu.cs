@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL;
 using DAL.FileSystem;
+using Domain;
 
 
 namespace OthelloGameBrain
@@ -14,21 +15,16 @@ namespace OthelloGameBrain
     {
         public void MainMenu()
         {
-            //
-            IGameOptionsRepository repo = new GameOptionsRepositoryFileSystem();
-            var options = repo.GetGameOptionsList(); 
-            foreach (var option in options)
-            {
-                Console.WriteLine(option);
-            }
 
-            Thread.Sleep(100000);
-            var brain = new OthelloBrain(8, 8);
+            IGameOptionsRepository repo = new GameOptionsRepositoryFileSystem();
+            var othelloOptions = repo.GetGameOptions("Default options");
+            var brain = new OthelloBrain(othelloOptions.Width, othelloOptions.Height);
             var board = brain.GetBoard();
-            var boardSize = new BoardSize();
-            var settings = new Options();
             // if default settings
-           settings.DefaultOptions(board);
+            brain.BoardSizeHorizontal = othelloOptions.Width;
+            brain.BoardSizeVertical = othelloOptions.Height;
+            brain.CurrentPlayer = othelloOptions.CurrentPlayer;
+            //board = othelloOptions.SetBoardInitialPieces(board);
             // TODO: if not default settings
             
             //Console.Clear();
@@ -55,14 +51,7 @@ namespace OthelloGameBrain
 
             string SubmenuLoadGame()
             {
-                var menu = new Menu("New game", EMenuLevel.First);
-                menu.AddMenuItems(new List<MenuItem>()
-                {
-                    new MenuItem("Saved Games", SavedGames),
-                    new MenuItem("Options", Options),
-                });
-                var res = menu.Run();
-                return res;
+                return "";
             }
 
             string StartGame()
@@ -73,7 +62,7 @@ namespace OthelloGameBrain
                 int blackScore = 0;
                 string winner = "null";
                 var game = new GameAction();
-                game.Start(brain, board, boardSize, axisX, axisY, winner, blackScore, whiteScore);
+                game.Start(brain, board, axisX, axisY, winner, blackScore, whiteScore);
                 return "";
             }
 
@@ -85,8 +74,33 @@ namespace OthelloGameBrain
 
             string Options()
             {
-                Console.WriteLine("Enjoy your game!");
-                return "";
+                
+                
+                var optionsList = repo.GetGameOptionsList();
+                
+
+                var menu = new Menu("New game", EMenuLevel.First);
+                foreach (var option in optionsList)
+                {
+                    menu.AddMenuItems(new List<MenuItem>()
+                    {
+                        new MenuItem($"{option}", LoadOption),
+                    });
+                    string LoadOption()
+                    {
+                        othelloOptions = repo.GetGameOptions($"{option}");
+                        brain = new OthelloBrain(othelloOptions.Width, othelloOptions.Height);
+                        board = brain.GetBoard();
+                        brain.CurrentPlayer = othelloOptions.CurrentPlayer;
+                        
+                        return StartGame();
+                    }
+                }
+                
+                var res = menu.Run();
+                return res;
+
+                
             }
         }
 

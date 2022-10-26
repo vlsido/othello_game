@@ -1,13 +1,14 @@
 ﻿
 
-using OthelloGameBrain;
+using Domain;
+using DAL;
 
 namespace DAL.FileSystem;
 
 public class GameOptionsRepositoryFileSystem : IGameOptionsRepository
 {
     private const string FileExtension = "json";
-    private readonly string _optionsDirectory = "." + System.IO.Path.DirectorySeparatorChar + "options";
+    private readonly string _optionsDirectory = @"D:\othellogame\OthelloGame\DAL.FileSystem" + System.IO.Path.DirectorySeparatorChar + "OthelloOptions";
 
     public string Name { get; } = "FileSystem";
 
@@ -43,6 +44,7 @@ public class GameOptionsRepositoryFileSystem : IGameOptionsRepository
 
         var fileContent = System.Text.Json.JsonSerializer.Serialize(option);
         System.IO.File.WriteAllText(GetFileName(id), fileContent);
+        Console.WriteLine($"Saved to: {_optionsDirectory}");
     }
 
     public void DeleteGameOptions(string id)
@@ -56,7 +58,7 @@ public class GameOptionsRepositoryFileSystem : IGameOptionsRepository
                System.IO.Path.DirectorySeparatorChar +
                id + "." + FileExtension;
     }
-
+    
     private void CheckOrCreateDirectory()
     {
         if (!System.IO.Directory.Exists(_optionsDirectory))
