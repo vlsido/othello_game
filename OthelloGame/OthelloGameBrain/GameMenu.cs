@@ -13,7 +13,7 @@ namespace OthelloGameBrain
 {
     public class GameMenu
     {
-        public void MainMenu()
+        public string MainMenu()
         {
 
             IGameOptionsRepository repo = new GameOptionsRepositoryFileSystem();
@@ -92,6 +92,8 @@ namespace OthelloGameBrain
                         brain = new OthelloBrain(othelloOptions.Width, othelloOptions.Height);
                         board = brain.GetBoard();
                         brain.CurrentPlayer = othelloOptions.CurrentPlayer;
+                        brain.BoardSizeHorizontal = othelloOptions.Width;
+                        brain.BoardSizeVertical = othelloOptions.Height;
                         
                         return StartGame();
                     }
@@ -102,8 +104,9 @@ namespace OthelloGameBrain
 
                 
             }
+
+            return "";
         }
 
-        
     }
 }

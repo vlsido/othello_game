@@ -42,7 +42,9 @@ namespace OthelloGameBrain
                 board[x, 0].IsFileNotation = true;
                 res[x, y] = board[x, y];
             }
-                
+
+            
+
             return res;
         }
 

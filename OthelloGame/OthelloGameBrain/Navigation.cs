@@ -13,7 +13,7 @@ namespace OthelloGameBrain
         {
             var validMove = new ValidMoves();
             var validCount = 0;
-            var changed = false;
+            var pause = new PauseMenu();
 
             // TODO: если все плейсед, то чек счёт
 
@@ -152,6 +152,7 @@ namespace OthelloGameBrain
                         
                         break;
                     case ConsoleKey.P:
+                        
                         break;
                 }
                 // if player can move
