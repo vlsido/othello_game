@@ -142,6 +142,8 @@ namespace OthelloGameBrain
             }
 
             brain.GameBoard.Board = new BoardSquareState[boardSizeHorizontal, boardSizeVertical];
+            brain.BoardSizeHorizontal = boardSizeHorizontal;
+            brain.BoardSizeVertical = boardSizeVertical;
 
             board = brain.GetBoard();
 
