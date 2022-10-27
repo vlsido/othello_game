@@ -7,6 +7,11 @@
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public string SerializedGameState { get; set; } = default!;
+        public int AxisX { get; set; }
+        public int AxisY { get; set; }
+        public int BlackScore { get; set; }
+        public int WhiteScore { get; set; }
+        public string? Winner { get; set; }
 
         public int OthelloGameId { get; set; }
         public OthelloGame? OthelloGame { get; set; }

@@ -132,8 +132,8 @@ namespace OthelloGameBrain
 
             if (dto != null)
             {
-                boardSizeHorizontal = dto.GameBoard.Board.Count;
-                BoardSizeVertical = dto.GameBoard.Board.Count;
+                boardSizeHorizontal = dto.BoardSizeHorizontal;
+                boardSizeVertical = dto.BoardSizeVertical;
             }
             else
             {

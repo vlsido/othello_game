@@ -16,7 +16,6 @@ namespace Domain
         public int Height { get; set; } = 8;
         public string CurrentPlayer { get; set; } = "Black";
 
-        // ICollection - no foo[]
         public ICollection<OthelloGame>? OthelloGames { get; set; }
 
         public OthelloOption(int width, int height)

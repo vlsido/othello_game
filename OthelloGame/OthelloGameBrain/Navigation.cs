@@ -152,7 +152,7 @@ namespace OthelloGameBrain
                         
                         break;
                     case ConsoleKey.P:
-                        
+                        pause.PauseMenuFunction(brain, board, linesOfSquares, axisX, axisY, winner, blackScore, whiteScore);
                         break;
                 }
                 // if player can move

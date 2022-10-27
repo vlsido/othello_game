@@ -15,7 +15,7 @@ namespace OthelloGameBrain
     {
         public string MainMenu()
         {
-
+            var saveLoad = new SaveLoadGame();
             IGameOptionsRepository repo = new GameOptionsRepositoryFileSystem();
             var othelloOptions = repo.GetGameOptions("Default options");
             var brain = new OthelloBrain(othelloOptions.Width, othelloOptions.Height);
@@ -51,7 +51,7 @@ namespace OthelloGameBrain
 
             string SubmenuLoadGame()
             {
-                return "";
+                return saveLoad.LoadGame(brain, board);
             }
 
             string StartGame()
@@ -66,7 +66,7 @@ namespace OthelloGameBrain
                 return "";
             }
 
-            string SavedGames()
+            string SaveGame()
             {
                 Console.WriteLine("Enjoy your game!");
                 return "";

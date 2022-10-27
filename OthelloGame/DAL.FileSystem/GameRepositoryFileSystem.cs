@@ -14,7 +14,7 @@ namespace DAL.FileSystem
         
         public string Name { get; } = "FileSystem";
 
-        public List<string> GetGameOptionsList()
+        public List<string> GetGames()
         {
             CheckOrCreateDirectory();
 
@@ -27,7 +27,7 @@ namespace DAL.FileSystem
 
             return res;
         }
-        // TODO: save game
+
         public void SaveGame(string id, OthelloGameState gameState)
         {
             CheckOrCreateDirectory();
@@ -45,13 +45,13 @@ namespace DAL.FileSystem
         public OthelloGameState GetGameState(string id)
         {
             var fileContent = System.IO.File.ReadAllText(GetFileName(id));
-            var savedGames = System.Text.Json.JsonSerializer.Deserialize<OthelloGameState>(fileContent);
-            if (savedGames == null)
+            var savedGame = System.Text.Json.JsonSerializer.Deserialize<OthelloGameState>(fileContent);
+            if (savedGame == null)
             {
                 throw new NullReferenceException($"Could not deserialize: {fileContent}");
             }
 
-            return savedGames;
+            return savedGame;
         }
 
         private string GetFileName(string id)

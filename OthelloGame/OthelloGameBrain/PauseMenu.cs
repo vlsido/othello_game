@@ -9,7 +9,7 @@ namespace OthelloGameBrain
 {
     public class PauseMenu
     {
-        public void PauseMenuFunction(string[] args, OthelloBrain brain, BoardSquareState[,] board,
+        public void PauseMenuFunction( OthelloBrain brain, BoardSquareState[,] board,
             List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY, string winner, int blackScore, int whiteScore)
         {
             var gameMenu = new GameMenu();
@@ -31,18 +31,12 @@ namespace OthelloGameBrain
 
             string SaveGameFunction()
             {
-                saveLoadGame.SaveGame(args, boardA!, boardAHidden!,
-                    boardB!, boardBHidden!, brain!, aDict, aCoords, bDict, bCoords, db);
-                var res = "";
-                return res;
+                return saveLoadGame.SaveGame(brain, board, axisX, axisY, blackScore, whiteScore, winner);
             }
 
             string LoadGameFunction()
             {
-                saveLoadGame.LoadGame(args, brain, boardA!, boardAHidden!, boardB!, boardBHidden!, aDict, aCoords,
-                    bDict, bCoords, db);
-                var res = "";
-                return res;
+                return saveLoadGame.LoadGame(brain, board);
             }
 
             string MainMenuFunction()
