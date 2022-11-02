@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OthelloGameBrain
+namespace OthelloDb
 {
-    public class GameStat
+    internal class Class1
     {
-        
     }
 }

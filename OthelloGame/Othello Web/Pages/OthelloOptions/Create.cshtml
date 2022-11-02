@@ -1,0 +1,49 @@
+@page
+@model Othello_Web.Pages_OthelloOptions.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>OthelloOption</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="OthelloOption.Name" class="control-label"></label>
+                <input asp-for="OthelloOption.Name" class="form-control" />
+                <span asp-validation-for="OthelloOption.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OthelloOption.Width" class="control-label"></label>
+                <input asp-for="OthelloOption.Width" class="form-control" />
+                <span asp-validation-for="OthelloOption.Width" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OthelloOption.Height" class="control-label"></label>
+                <input asp-for="OthelloOption.Height" class="form-control" />
+                <span asp-validation-for="OthelloOption.Height" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OthelloOption.CurrentPlayer" class="control-label"></label>
+                <input asp-for="OthelloOption.CurrentPlayer" class="form-control" />
+                <span asp-validation-for="OthelloOption.CurrentPlayer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

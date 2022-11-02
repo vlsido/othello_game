@@ -14,11 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TODOs.txt = TODOs.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{5309ACEF-FAF5-4E48-8F08-A8A3D0F094AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{5309ACEF-FAF5-4E48-8F08-A8A3D0F094AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.FileSystem", "DAL.FileSystem\DAL.FileSystem.csproj", "{658E208C-A5E2-4F7E-8921-BA0B79F08AD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL.FileSystem", "DAL.FileSystem\DAL.FileSystem.csproj", "{658E208C-A5E2-4F7E-8921-BA0B79F08AD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{8D33CED7-92CB-4FE6-B799-C05F16B4EB07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{8D33CED7-92CB-4FE6-B799-C05F16B4EB07}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL.Db", "DAL.Db\DAL.Db.csproj", "{D53CA288-7F77-4B55-84E2-1A1BAE61423F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloWeb", "Othello Web\OthelloWeb.csproj", "{006B36D8-F7AA-4EB9-A541-9DB872026BAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +54,14 @@ Global
 		{8D33CED7-92CB-4FE6-B799-C05F16B4EB07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D33CED7-92CB-4FE6-B799-C05F16B4EB07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D33CED7-92CB-4FE6-B799-C05F16B4EB07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D53CA288-7F77-4B55-84E2-1A1BAE61423F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D53CA288-7F77-4B55-84E2-1A1BAE61423F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D53CA288-7F77-4B55-84E2-1A1BAE61423F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D53CA288-7F77-4B55-84E2-1A1BAE61423F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{006B36D8-F7AA-4EB9-A541-9DB872026BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{006B36D8-F7AA-4EB9-A541-9DB872026BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{006B36D8-F7AA-4EB9-A541-9DB872026BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{006B36D8-F7AA-4EB9-A541-9DB872026BAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

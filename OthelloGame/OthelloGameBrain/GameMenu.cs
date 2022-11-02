@@ -5,8 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
+using DAL.Db;
 using DAL.FileSystem;
 using Domain;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 
 namespace OthelloGameBrain
@@ -15,6 +18,12 @@ namespace OthelloGameBrain
     {
         public string MainMenu()
         {
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+
+            using var othelloDb = new AppDbContext(options);
+
             var saveLoad = new SaveLoadGame();
             IGameOptionsRepository repo = new GameOptionsRepositoryFileSystem();
             var othelloOptions = repo.GetGameOptions("Default options");
@@ -51,7 +60,7 @@ namespace OthelloGameBrain
 
             string SubmenuLoadGame()
             {
-                return saveLoad.LoadGame(brain, board);
+                return saveLoad.LoadGame(brain, board, othelloDb);
             }
 
             string StartGame()
@@ -62,7 +71,89 @@ namespace OthelloGameBrain
                 int blackScore = 0;
                 string winner = "null";
                 var game = new GameAction();
-                game.Start(brain, board, axisX, axisY, winner, blackScore, whiteScore);
+                EPlayerType opponentType;
+
+                var playAgainst = new Menu("Play against:", EMenuLevel.First);
+                playAgainst.AddMenuItems(new List<MenuItem>()
+                {
+                    new MenuItem("Human", PlayAgainstHuman),
+                    new MenuItem("Ai", PlayAgainstAi),
+                });
+                var res = playAgainst.Run();
+
+                string PlayAgainstHuman()
+                {
+                    Console.Write("Enter Player1 name: ");
+                    var player1Name = Console.ReadLine();
+                    Console.Write("Enter Player2 name: ");
+                    var player2Name = Console.ReadLine();
+                    opponentType = EPlayerType.Human;
+
+                    var othelloGame = new OthelloGame()
+                    {
+                        Player1Name = player1Name,
+                        Player1Type = EPlayerType.Human,
+                        Player2Name = player2Name,
+                        Player2Type = EPlayerType.Human,
+                        OthelloOption = othelloOptions,
+                        OthelloGameStates = new List<OthelloGameState>()
+                        {
+                            new OthelloGameState()
+                            {
+                                AxisX = axisX,
+                                AxisY = axisY,
+                                BlackScore = blackScore,
+                                WhiteScore = whiteScore,
+                                SerializedGameState = brain.GetBrainJson(brain, board),
+                                Winner = winner
+                            }
+                        }
+                    };
+
+                    othelloDb.OthelloGames.Add(othelloGame);
+                    othelloDb.SaveChanges();
+
+                    brain.OpponentType = EPlayerType.Human;
+
+                    return game.Start(brain, board, axisX, axisY, winner, blackScore, whiteScore, othelloDb);
+                }
+
+                string PlayAgainstAi()
+                {
+                    Console.Write("Enter your name: ");
+                    var player1Name = Console.ReadLine();
+                    var player2Name = "Bot";
+                    opponentType = EPlayerType.Ai;
+
+                    var othelloGame = new OthelloGame()
+                    {
+                        Player1Name = player1Name,
+                        Player1Type = EPlayerType.Human,
+                        Player2Name = player2Name,
+                        Player2Type = EPlayerType.Ai,
+                        OthelloOption = othelloOptions,
+                        OthelloGameStates = new List<OthelloGameState>()
+                        {
+                            new OthelloGameState()
+                            {
+                                AxisX = axisX,
+                                AxisY = axisY,
+                                BlackScore = blackScore,
+                                WhiteScore = whiteScore,
+                                SerializedGameState = brain.GetBrainJson(brain, board),
+                                Winner = winner
+                            }
+                        }
+                    };
+
+                    othelloDb.OthelloGames.Add(othelloGame);
+                    othelloDb.SaveChanges();
+                    
+                    brain.OpponentType = EPlayerType.Ai;
+
+                    return game.Start(brain, board, axisX, axisY, winner, blackScore, whiteScore, othelloDb);
+                }
+
                 return "";
             }
 
@@ -74,11 +165,8 @@ namespace OthelloGameBrain
 
             string Options()
             {
-                
-                
                 var optionsList = repo.GetGameOptionsList();
                 
-
                 var menu = new Menu("New game", EMenuLevel.First);
                 foreach (var option in optionsList)
                 {
@@ -98,11 +186,8 @@ namespace OthelloGameBrain
                         return StartGame();
                     }
                 }
-                
-                var res = menu.Run();
-                return res;
 
-                
+                return menu.Run();
             }
 
             return "";

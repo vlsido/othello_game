@@ -1,19 +1,24 @@
-﻿using System;
+﻿using Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.Db;
 
 namespace OthelloGameBrain
 {
     public class Navigation
     {
         public (OthelloBrain, BoardSquareState[,], int, int, string) Navigate(OthelloBrain brain, BoardSquareState[,] board, 
-            List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY, string winner, int blackScore, int whiteScore)
+            List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY, string winner, int blackScore, int whiteScore,
+            AppDbContext othelloDb)
         {
             var validMove = new ValidMoves();
             var validCount = 0;
             var pause = new PauseMenu();
+
+            
 
             // TODO: если все плейсед, то чек счёт
 
@@ -152,32 +157,9 @@ namespace OthelloGameBrain
                         
                         break;
                     case ConsoleKey.P:
-                        pause.PauseMenuFunction(brain, board, linesOfSquares, axisX, axisY, winner, blackScore, whiteScore);
+                        pause.PauseMenuFunction(brain, board, linesOfSquares, axisX, axisY, winner, blackScore, whiteScore, othelloDb);
                         break;
                 }
-                // if player can move
-                // player moves
-                // check if valid move
-                // if valid move
-                // place piece
-                // flip pieces
-                // check if game over
-                // if game over
-                // gameOver = true
-                // else
-                // switch player
-                // check if player can move
-                // if player can move
-                // player moves
-                // check if valid move
-                // if valid move
-                // place piece
-                // flip pieces
-                // check if game over
-                // if game over
-                // gameOver = true
-                // else
-                // switch player
 
                 if (moveDone)
                 {
@@ -190,7 +172,9 @@ namespace OthelloGameBrain
                         brain.CurrentPlayer = "Black";
                     }
                 }
+
                 
+
             } while (moveDone == false);
 
             return (brain, board, axisX, axisY, winner);

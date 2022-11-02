@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
+using Domain;
 
 namespace OthelloGameBrain
 {
@@ -13,6 +14,7 @@ namespace OthelloGameBrain
     {
         public static string BasePath = "D:\\othellogame\\OthelloGame\\SavedGames";
         public string CurrentPlayer = "Black";
+        public EPlayerType OpponentType;
         public GameBoard GameBoard;
 
         private readonly Random _rnd = new();

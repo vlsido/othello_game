@@ -1,0 +1,78 @@
+@page
+@model Othello_Web.Pages_OthelloGameStates.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OthelloGameState[0].CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OthelloGameState[0].SerializedGameState)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OthelloGameState[0].AxisX)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OthelloGameState[0].AxisY)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OthelloGameState[0].BlackScore)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OthelloGameState[0].WhiteScore)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OthelloGameState[0].Winner)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OthelloGameState[0].OthelloGame)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.OthelloGameState) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SerializedGameState)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AxisX)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AxisY)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BlackScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WhiteScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Winner)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OthelloGame!.Id)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

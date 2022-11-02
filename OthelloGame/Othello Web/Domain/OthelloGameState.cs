@@ -1,0 +1,22 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Othello_Web.Domain
+{
+    public class OthelloGameState
+    {
+        public int Id { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public string SerializedGameState { get; set; } = default!;
+        public int AxisX { get; set; }
+        public int AxisY { get; set; }
+        public int BlackScore { get; set; }
+        public int WhiteScore { get; set; }
+        public string? Winner { get; set; }
+
+        public int OthelloGameId { get; set; }
+        public OthelloGame? OthelloGame { get; set; }
+    }
+}

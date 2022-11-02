@@ -34,6 +34,7 @@ namespace DAL.FileSystem
 
             var fileContent = System.Text.Json.JsonSerializer.Serialize(gameState);
             System.IO.File.WriteAllText(GetFileName(id), fileContent);
+            
             Console.WriteLine($"Saved to: {_savedGamesDirectory}");
         }
 
@@ -52,6 +53,18 @@ namespace DAL.FileSystem
             }
 
             return savedGame;
+        }
+
+        public OthelloGameState GetGame(string id)
+        {
+            var fileContent = System.IO.File.ReadAllText(GetFileName(id));
+            var othelloGameState = System.Text.Json.JsonSerializer.Deserialize<OthelloGameState>(fileContent);
+            if (othelloGameState == null)
+            {
+                throw new NullReferenceException($"Could not deserialize: {fileContent}");
+            }
+
+            return othelloGameState;
         }
 
         private string GetFileName(string id)

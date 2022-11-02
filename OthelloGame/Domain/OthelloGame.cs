@@ -8,7 +8,7 @@ namespace Domain
 
         public DateTime StartedAt { get; set; } = DateTime.Now;
         public DateTime? GameOverAt { get; set; }
-        public string? GameWonByPlayer { get; set; }
+        
 
         [MaxLength(128)] 
         public string Player1Name { get; set; } = default!;

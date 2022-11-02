@@ -18,12 +18,6 @@ namespace Domain
 
         public ICollection<OthelloGame>? OthelloGames { get; set; }
 
-        public OthelloOption(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
-
 
         public override string ToString()
         {

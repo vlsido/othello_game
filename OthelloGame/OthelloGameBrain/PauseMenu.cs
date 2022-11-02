@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.Db;
 using MenuSystem;
 
 namespace OthelloGameBrain
@@ -10,7 +11,8 @@ namespace OthelloGameBrain
     public class PauseMenu
     {
         public void PauseMenuFunction( OthelloBrain brain, BoardSquareState[,] board,
-            List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY, string winner, int blackScore, int whiteScore)
+            List<List<BoardSquareState>> linesOfSquares, int axisX, int axisY, string winner, int blackScore, int whiteScore,
+            AppDbContext othelloDb)
         {
             var gameMenu = new GameMenu();
             var saveLoadGame = new SaveLoadGame();
@@ -31,12 +33,12 @@ namespace OthelloGameBrain
 
             string SaveGameFunction()
             {
-                return saveLoadGame.SaveGame(brain, board, axisX, axisY, blackScore, whiteScore, winner);
+                return saveLoadGame.SaveGame(brain, board, axisX, axisY, blackScore, whiteScore, winner, othelloDb);
             }
 
             string LoadGameFunction()
             {
-                return saveLoadGame.LoadGame(brain, board);
+                return saveLoadGame.LoadGame(brain, board, othelloDb);
             }
 
             string MainMenuFunction()
