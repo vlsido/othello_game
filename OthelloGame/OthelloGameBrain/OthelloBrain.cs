@@ -37,15 +37,31 @@ namespace OthelloGameBrain
 
         private BoardSquareState[,] CreateBoard(BoardSquareState[,] board)
         {
+            var oneTimeFunc = true;
             var res = new BoardSquareState[board.GetLength(0), board.GetLength(1)];
             for (var x = 0; x < board.GetLength(0); x++)
-            for (var y = 0; y < board.GetLength(1); y++)
             {
-                board[x, 0].IsFileNotation = true;
-                res[x, y] = board[x, y];
+                for (var y = 0; y < board.GetLength(1); y++)
+                {
+                    if (oneTimeFunc)
+                    {
+                        board[(board.GetLength(0) / 2), (board.GetLength(1) / 2)].IsPlaced = true;
+                        board[(board.GetLength(0) / 2), (board.GetLength(1) / 2)].PlayerColor = "White";
+                        board[(board.GetLength(0) / 2) - 1, (board.GetLength(1) / 2) - 1].IsPlaced = true;
+                        board[(board.GetLength(0) / 2) - 1, (board.GetLength(1) / 2) - 1].PlayerColor = "White";
+                        board[(board.GetLength(0) / 2) - 1, (board.GetLength(1) / 2)].IsPlaced = true;
+                        board[(board.GetLength(0) / 2) - 1, (board.GetLength(1) / 2)].PlayerColor = "Black";
+                        board[(board.GetLength(0) / 2), (board.GetLength(1) / 2) - 1].IsPlaced = true;
+                        board[(board.GetLength(0) / 2), (board.GetLength(1) / 2) - 1].PlayerColor = "Black";
+                        oneTimeFunc = false;
+                    }
+                    board[x, 0].IsFileNotation = true;
+                    res[x, y] = board[x, y];
+                }
             }
 
             
+
 
             return res;
         }

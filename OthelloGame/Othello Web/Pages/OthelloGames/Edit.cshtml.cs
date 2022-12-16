@@ -23,20 +23,28 @@ namespace Othello_Web.Pages_OthelloGames
         [BindProperty]
         public OthelloGame OthelloGame { get; set; } = default!;
 
+        [BindProperty]
+        public OthelloOption OthelloOption { get; set; } = default!;
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            // Othello games
             if (id == null || _context.OthelloGames == null)
             {
                 return NotFound();
             }
 
-            var othellogame =  await _context.OthelloGames.FirstOrDefaultAsync(m => m.Id == id);
-            if (othellogame == null)
+
+            var othelloGame =  await _context.OthelloGames.FirstOrDefaultAsync(m => m.Id == id);
+            var othelloOption = await _context.OthelloOptions.FirstOrDefaultAsync(m => m.Id == othelloGame!.OthelloOptionId);
+
+            if (othelloGame == null || othelloOption == null)
             {
                 return NotFound();
             }
-            OthelloGame = othellogame;
-           ViewData["OthelloOptionId"] = new SelectList(_context.OthelloOptions, "Id", "Id");
+            OthelloGame = othelloGame;
+            OthelloOption = othelloOption;
+           ViewData["Name"] = new SelectList(_context.OthelloOptions, "Name", "Name");
             return Page();
         }
 
@@ -73,6 +81,11 @@ namespace Othello_Web.Pages_OthelloGames
         private bool OthelloGameExists(int id)
         {
           return (_context.OthelloGames?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        private bool OthelloOptionExists(int id)
+        {
+            return (_context.OthelloOptions?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -24,14 +24,7 @@ namespace OthelloGameBrain
             List<BoardSquareState> validForOpponent = new List<BoardSquareState>();
 
             var gameOver = false;
-            board[(board.GetLength(0) / 2), (board.GetLength(1) / 2)].IsPlaced = true;
-            board[(board.GetLength(0) / 2), (board.GetLength(1) / 2)].PlayerColor = "White";
-            board[(board.GetLength(0) / 2) - 1, (board.GetLength(1) / 2) - 1].IsPlaced = true;
-            board[(board.GetLength(0) / 2) - 1, (board.GetLength(1) / 2) - 1].PlayerColor = "White";
-            board[(board.GetLength(0) / 2) - 1, (board.GetLength(1) / 2)].IsPlaced = true;
-            board[(board.GetLength(0) / 2) - 1, (board.GetLength(1) / 2)].PlayerColor = "Black";
-            board[(board.GetLength(0) / 2), (board.GetLength(1) / 2) - 1].IsPlaced = true;
-            board[(board.GetLength(0) / 2), (board.GetLength(1) / 2) - 1].PlayerColor = "Black";
+            
 
             board[axisX, axisY].IsSelected = true;
             

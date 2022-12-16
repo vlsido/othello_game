@@ -19,8 +19,8 @@ namespace Othello_Web.Pages_OthelloGames
             _context = context;
         }
 
-      public OthelloGame OthelloGame { get; set; } = default!; 
-
+      public OthelloGame OthelloGame { get; set; } = default!;
+        
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null || _context.OthelloGames == null)

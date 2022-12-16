@@ -1,4 +1,5 @@
 @page
+@using Othello_Web.Domain
 @model Othello_Web.Pages_OthelloGames.CreateModel
 
 @{
@@ -14,23 +15,13 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="OthelloGame.StartedAt" class="control-label"></label>
-                <input asp-for="OthelloGame.StartedAt" class="form-control" />
-                <span asp-validation-for="OthelloGame.StartedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OthelloGame.GameOverAt" class="control-label"></label>
-                <input asp-for="OthelloGame.GameOverAt" class="form-control" />
-                <span asp-validation-for="OthelloGame.GameOverAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="OthelloGame.Player1Name" class="control-label"></label>
                 <input asp-for="OthelloGame.Player1Name" class="form-control" />
                 <span asp-validation-for="OthelloGame.Player1Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="OthelloGame.Player1Type" class="control-label"></label>
-                <select asp-for="OthelloGame.Player1Type" class="form-control"></select>
+                <select asp-for="OthelloGame.Player1Type" class="form-select" asp-items="Html.GetEnumSelectList<EPlayerType>()"></select>
                 <span asp-validation-for="OthelloGame.Player1Type" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,12 +31,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="OthelloGame.Player2Type" class="control-label"></label>
-                <select asp-for="OthelloGame.Player2Type" class="form-control"></select>
+                <select asp-for="OthelloGame.Player2Type" class="form-select" asp-items="Html.GetEnumSelectList<EPlayerType>()"></select>
                 <span asp-validation-for="OthelloGame.Player2Type" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="OthelloGame.OthelloOptionId" class="control-label"></label>
-                <select asp-for="OthelloGame.OthelloOptionId" class ="form-control" asp-items="ViewBag.OthelloOptionId"></select>
+                <select asp-for="OthelloGame.OthelloOptionId" class ="form-select" asp-items="Model.OptionSelectList"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

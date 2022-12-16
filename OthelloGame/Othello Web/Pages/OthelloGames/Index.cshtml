@@ -47,23 +47,28 @@
                 @Html.DisplayFor(modelItem => item.GameOverAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Player1Name)
+                Continue as:
+                <a asp-page="./Play" asp-route-id="@item.Id" asp-route-player="player1">
+                    @Html.DisplayFor(modelItem => item.Player1Name)
+                </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Player1Type)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Player2Name)
+                    Continue as:
+                <a asp-page="./Play" asp-route-id="@item.Id" asp-route-player="player2">
+                    @Html.DisplayFor(modelItem => item.Player2Name)
+                </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Player2Type)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OthelloOption!.Id)
+                @*@Html.DisplayFor(modelItem => item.OthelloOption!.Id)*@
+                @(item.OthelloOption!.Name)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>

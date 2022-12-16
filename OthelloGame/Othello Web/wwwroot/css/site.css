@@ -16,3 +16,18 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+img {
+    display: block;
+}
+
+.game-table {
+    width: initial;
+    height: initial;
+    border-collapse: collapse;
+}
+
+.game-table-cell {
+    width: 75px;
+    height: 75px;
+}

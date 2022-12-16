@@ -5,14 +5,29 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Othello_Web.Data;
 using Othello_Web.Domain;
+using OthelloGameBrain;
 
 namespace Othello_Web.Pages_OthelloGames
 {
     public class CreateModel : PageModel
     {
         private readonly Othello_Web.Data.ApplicationDbContext _context;
+
+        [BindProperty]
+        public OthelloGame OthelloGame { get; set; } = default!;
+
+        public OthelloGameState GameState { get; set; } = default!;
+
+        public OthelloBrain Brain { get; set; } = default!;
+
+        public BoardSquareState[,] Board { get; set; } = default!;
+
+        public OthelloOption OthelloOption { get; set; } = default!;
+
+        public SelectList OptionSelectList { get; set; } = default!;
 
         public CreateModel(Othello_Web.Data.ApplicationDbContext context)
         {
@@ -21,26 +36,29 @@ namespace Othello_Web.Pages_OthelloGames
 
         public IActionResult OnGet()
         {
-        ViewData["OthelloOptionId"] = new SelectList(_context.OthelloOptions, "Id", "Id");
+            
+            OptionSelectList = new SelectList(_context.OthelloOptions, "Id", "Name");
             return Page();
         }
 
-        [BindProperty]
-        public OthelloGame OthelloGame { get; set; } = default!;
+        
         
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || _context.OthelloGames == null || OthelloGame == null)
-            {
-                return Page();
-            }
+            OthelloOption = await _context.OthelloOptions.FirstOrDefaultAsync(o => o.Id == OthelloGame.OthelloOptionId) ?? throw new InvalidOperationException();
+            OthelloGame.OthelloOption = OthelloOption;
 
             _context.OthelloGames.Add(OthelloGame);
             await _context.SaveChangesAsync();
+            
+            
 
-            return RedirectToPage("./Index");
+
+
+
+          return RedirectToPage("./Play");
         }
     }
 }

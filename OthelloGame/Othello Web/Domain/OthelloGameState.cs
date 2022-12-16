@@ -14,6 +14,7 @@ namespace Othello_Web.Domain
         public int AxisY { get; set; }
         public int BlackScore { get; set; }
         public int WhiteScore { get; set; }
+        public bool CurrentMoveByBlack { get; set; } = true;
         public string? Winner { get; set; }
 
         public int OthelloGameId { get; set; }

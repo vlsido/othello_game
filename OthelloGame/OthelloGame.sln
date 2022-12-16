@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL.Db", "DAL.Db\DAL.Db.csproj", "{D53CA288-7F77-4B55-84E2-1A1BAE61423F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OthelloWeb", "Othello Web\OthelloWeb.csproj", "{006B36D8-F7AA-4EB9-A541-9DB872026BAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OthelloWeb", "Othello Web\OthelloWeb.csproj", "{006B36D8-F7AA-4EB9-A541-9DB872026BAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
