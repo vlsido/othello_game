@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
@@ -18,22 +19,16 @@ namespace Othello_Web.Pages.OthelloGames
             _context = context;
         }
 
-       
-
         public OthelloBrain Brain { get; set; } = default!;
         public OthelloGameState? GameState { get; set; }
         public BoardSquareState[,] Board { get; set; } = default!;
         public List<List<BoardSquareState>> LinesOfSquares { get; set; } = default!;
         public ValidMoves ValidMoves { get; set; } = default!;
+        public CountScore CountScore { get; set; } = new CountScore();
         public OthelloGame Game { get; set; } = default!;
-
-
-
-        public string CurrentPlayer { get; set; } = "Black";
 
         public async Task<IActionResult> OnGet(int? id, int? x, int? y)
         {
-            
             var game = _context.OthelloGames
                 .Include(o => o.OthelloOption)
                 .Include(gs => gs.OthelloGameStates)
@@ -44,8 +39,6 @@ namespace Othello_Web.Pages.OthelloGames
                 return NotFound();
             }
 
-            var serialized = "";
-
             Brain = new OthelloBrain(game.OthelloOption.Width, game.OthelloOption.Height)
             {
                 BoardSizeHorizontal = game.OthelloOption.Width,
@@ -54,31 +47,34 @@ namespace Othello_Web.Pages.OthelloGames
 
             Board = Brain.GetBoard();
             Game = game;
-            if (_context.OthelloGamesStates.FirstOrDefaultAsync(g => g.OthelloGameId == id!.Value) == null)
+            if (_context.OthelloGamesStates.FirstOrDefault(g => g.OthelloGameId == id!.Value) == null)
             {
-                
-
-                serialized = Brain.GetBrainJson(Brain, Board);
-                _context.OthelloGamesStates.Add(new OthelloGameState()
+                var serialized = Brain.GetBrainJson(Brain, Board);
+                GameState = new OthelloGameState()
                 {
                     AxisX = 0,
                     AxisY = 0,
                     BlackScore = 2,
                     WhiteScore = 2,
                     OthelloGameId = id!.Value,
+                    Winner = "null",
                     SerializedGameState = serialized,
-                });
+                };
+                _context.OthelloGamesStates.Add(GameState);
                 await _context.SaveChangesAsync();
             }
             else
             {
                 GameState = _context.OthelloGamesStates.FirstOrDefault(og => og.OthelloGameId == id!.Value);
                 (Brain, Board) = Brain.RestoreBrainFromJson(GameState!.SerializedGameState, Brain);
-
             }
 
-            LinesOfSquares = new List<List<BoardSquareState>>();
+            GameState.Winner = "null";
 
+                LinesOfSquares = new List<List<BoardSquareState>>();
+
+            //
+            var checkValidAgain = false;
             ValidMoves = new ValidMoves();
 
             (Board, LinesOfSquares) = ValidMoves.CheckValidMoves(Brain, Board, LinesOfSquares);
@@ -93,36 +89,80 @@ namespace Othello_Web.Pages.OthelloGames
                     }
                 }
             }
-
+            
+            
             if (x != null && y != null)
             {
+               
                 if (Board[x.Value, y.Value].IsValid)
                 {
-                    Board[x.Value, y.Value].IsValid = false;
                     Board[x.Value, y.Value].IsPlaced = true;
-                    if (GameState != null && GameState.CurrentMoveByBlack)
+                    if (GameState.CurrentMoveByBlack)
                     {
-                        Board[x.Value, y.Value].PlayerColor = "Black";
-                        CurrentPlayer = "White";
+                        Board[x.Value, y.Value].IsValid = false;
+                        Board[x.Value, y.Value].PlayerColor = Brain.CurrentPlayer;
                         GameState.CurrentMoveByBlack = false;
-                    }
-                    else
+                    } else if (!GameState.CurrentMoveByBlack)
                     {
-                        Board[x.Value, y.Value].PlayerColor = "White";
-                        GameState!.CurrentMoveByBlack = true;
-                        CurrentPlayer = "Black";
+                        Board[x.Value, y.Value].IsValid = false;
+                        Board[x.Value, y.Value].PlayerColor = Brain.CurrentPlayer;
+                        GameState.CurrentMoveByBlack = true;
+                    }
+                    for (var i = 0; i < LinesOfSquares.Count; i++)
+                    {
+                        for (var j = 0; j < LinesOfSquares[i].Count; j++)
+                        {
+                            if (LinesOfSquares[i][j].X == x.Value && LinesOfSquares[i][j].Y == y.Value)
+                            {
+                                foreach (var item in LinesOfSquares[i])
+                                {
+                                    if (item.IsValid)
+                                    {
+                                        Board[item.X, item.Y].IsPlaced = true;
+                                        Board[item.X, item.Y].PlayerColor = Brain.CurrentPlayer;
+                                    }
+
+                                    if (item.PlayerColor != Brain.CurrentPlayer)
+                                    {
+                                        Board[item.X, item.Y].PlayerColor = Brain.CurrentPlayer;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Brain.CurrentPlayer = GameState.CurrentMoveByBlack ? "Black" : "White";
+                }
+                checkValidAgain = true;
+            }
+
+            if (checkValidAgain)
+            {
+                (Board, LinesOfSquares) = ValidMoves.CheckValidMoves(Brain, Board, LinesOfSquares);
+
+                foreach (var firstDimension in LinesOfSquares)
+                {
+                    foreach (var secondDimension in firstDimension)
+                    {
+                        if (secondDimension.IsValid)
+                        {
+                            Board[secondDimension.X, secondDimension.Y].IsValid = true;
+                        }
                     }
                 }
             }
 
+            // COUNT CURRENT SCORE
+            int leftSquares = 0;
+            (GameState.BlackScore, GameState.WhiteScore, GameState.Winner) =
+                CountScore.Score(Board, GameState.BlackScore, GameState.WhiteScore, GameState.Winner, leftSquares);
+
             var serializedStr = Brain.GetBrainJson(Brain, Board);
 
-            GameState!.SerializedGameState = serializedStr;
+            GameState.SerializedGameState = serializedStr;
 
-
-            await using ApplicationDbContext ctx = new ApplicationDbContext(options);
-            ctx.OthelloGamesStates.Update(GameState);
-            await ctx.SaveChangesAsync();
+            _context.OthelloGamesStates.Update(GameState);
+            await _context.SaveChangesAsync();
+            //await _context.DisposeAsync();
 
             return Page();
         }

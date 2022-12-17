@@ -1,33 +1,43 @@
 ﻿@page
 @model Othello_Web.Pages.OthelloGames.PlayModel
 
-<h1>Now moving @Model.CurrentPlayer
-    <br/>Player One: @Model.Game.Player1Name
-    <br/>Player Two: @Model.Game.Player2Name</h1>
-<table class="table table-bordered game-table">
-    @for (var y = 0; y < Model.Brain.BoardSizeVertical; y++)
-    {
-        <tr>
-        @for (var x = 0; x < Model.Brain.BoardSizeHorizontal; x++)
+<div class="wrapper">
+<div class="one"><h1>Now moving @Model.Brain.CurrentPlayer</h1></div>
+    <div class="two">
+        <h2>Player One: @Model.Game.Player1Name</h2>
+        <h3>Score: @Model.GameState!.BlackScore</h3>
+    </div>
+    <div class="three">
+        <h2>Player Two: @Model.Game.Player2Name</h2>
+        <h3>Score: @Model.GameState!.WhiteScore</h3>
+    </div>
+<div class="four">
+    <table class="table table-bordered game-table">
+        @for (var y = 0; y < Model.Brain.BoardSizeVertical; y++)
         {
-            <td class="game-table-cell" onclick="window.location = 'Play?id=@Model.Game.Id&x=@x&y=@y'" style="padding: 0;">
+            <tr>
+                @for (var x = 0; x < Model.Brain.BoardSizeHorizontal; x++)
+                {
+                    <td class="game-table-cell" onclick="window.location = 'Play?id=@Model.Game.Id&x=@x&y=@y'" style="padding: 0;">
 
-                @if (Model.Board[x, y].IsValid)
-                {
-                    <img width="100%" height="100%" src="https://i.ibb.co/qgDFC0F/Valid.png"/>
-                } else if (Model.Board[x, y].PlayerColor == "White")
-                {
-                    <img width="100%" height="100%" src="https://i.ibb.co/CHrs4Mj/White.png"/>
-                } else if (Model.Board[x, y].PlayerColor == "Black")
-                {
-                        <img width="100%" height="100%" src="https://i.ibb.co/4TV32dF/Black.png"/>
+                        @if (Model.Board[x, y].IsValid)
+                        {
+                                <img width="100%" height="100%" src="https://i.ibb.co/3B5K32S/Valid.png" />
+                        } else if (Model.Board[x, y].PlayerColor == "White")
+                        {
+                                <img width="100%" height="100%" src="https://i.ibb.co/8zgcCkG/White.png" />
+                        } else if (Model.Board[x, y].PlayerColor == "Black")
+                        {
+                                <img width="100%" height="100%" src="https://i.ibb.co/7KXN9FH/Black.png" />
+                        }
+                        else
+                        {
+                                <img width="100%" height="100%" src="https://i.ibb.co/vcJMtHR/Square.png" />
+                        }
+                    </td>
                 }
-                else
-                {
-                        <img width="100%" height="100%" src="https://i.ibb.co/b11Qsy0/Square.png" />
-                }
-            </td>
+            </tr>
         }
-        </tr>
-    }
-</table>
+    </table>
+</div>
+</div>

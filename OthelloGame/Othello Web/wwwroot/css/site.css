@@ -9,9 +9,41 @@ html {
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
+
+.wrapper {
+    display: grid;
+    margin: 20px;
+    grid-template-columns: repeat(3, 1fr)
+}
+
+.one {
+    grid-column: 2/3;
+    grid-row: 1;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.two {
+    grid-column: 1;
+    grid-row: 2/5;
+}
+
+.three {
+    grid-column: 3;
+    grid-row: 2/5;
+    margin-left: auto;
+}
+
+.four {
+    width: 550px;
+    grid-column: 2/3;
+    grid-row: 2/3;
+}
+
+
 
 body {
   margin-bottom: 60px;
@@ -22,8 +54,11 @@ img {
 }
 
 .game-table {
+    margin-left: auto;
+    margin-right: auto;
     width: initial;
     height: initial;
+
     border-collapse: collapse;
 }
 
@@ -31,3 +66,4 @@ img {
     width: 75px;
     height: 75px;
 }
+

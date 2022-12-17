@@ -78,8 +78,6 @@ namespace OthelloGameBrain
                 Console.WriteLine($"Black score: {blackScore}");
                 Console.WriteLine($"White score: {whiteScore}");
 
-
-
                 var playerColor = brain.CurrentPlayer;
 
                 var keyInfo = Console.ReadKey();

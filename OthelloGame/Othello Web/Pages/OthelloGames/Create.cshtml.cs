@@ -52,13 +52,12 @@ namespace Othello_Web.Pages_OthelloGames
 
             _context.OthelloGames.Add(OthelloGame);
             await _context.SaveChangesAsync();
-            
-            
+
+            var game = _context.OthelloGames.FirstOrDefault(g => g.Id == OthelloGame.Id);
 
 
-
-
-          return RedirectToPage("./Play");
+            if (game != null) return RedirectToPage($"/Play?id={game.Id}");
+            else return NotFound();
         }
     }
 }
