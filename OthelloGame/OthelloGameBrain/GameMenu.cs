@@ -71,7 +71,9 @@ namespace OthelloGameBrain
                 int blackScore = 0;
                 string winner = "null";
                 var game = new GameAction();
+#pragma warning disable CS0219
                 EPlayerType opponentType;
+#pragma warning restore CS0219
 
                 var playAgainst = new Menu("Play against:", EMenuLevel.First);
                 playAgainst.AddMenuItems(new List<MenuItem>()
@@ -89,28 +91,32 @@ namespace OthelloGameBrain
                     var player2Name = Console.ReadLine();
                     opponentType = EPlayerType.Human;
 
-                    var othelloGame = new OthelloGame()
+                    if (player1Name != null && player2Name != null)
                     {
-                        Player1Name = player1Name,
-                        Player1Type = EPlayerType.Human,
-                        Player2Name = player2Name,
-                        Player2Type = EPlayerType.Human,
-                        OthelloOption = othelloOptions,
-                        OthelloGameStates = new List<OthelloGameState>()
+                        var othelloGame = new OthelloGame()
                         {
-                            new OthelloGameState()
+                            Player1Name = player1Name,
+                            Player1Type = EPlayerType.Human,
+                            Player2Name = player2Name,
+                            Player2Type = EPlayerType.Human,
+                            OthelloOption = othelloOptions,
+                            OthelloGameStates = new List<OthelloGameState>()
                             {
-                                AxisX = axisX,
-                                AxisY = axisY,
-                                BlackScore = blackScore,
-                                WhiteScore = whiteScore,
-                                SerializedGameState = brain.GetBrainJson(brain, board),
-                                Winner = winner
+                                new OthelloGameState()
+                                {
+                                    AxisX = axisX,
+                                    AxisY = axisY,
+                                    BlackScore = blackScore,
+                                    WhiteScore = whiteScore,
+                                    SerializedGameState = brain.GetBrainJson(brain, board),
+                                    Winner = winner
+                                }
                             }
-                        }
-                    };
+                        };
 
-                    othelloDb.OthelloGames.Add(othelloGame);
+                        othelloDb.OthelloGames.Add(othelloGame);
+                    }
+
                     othelloDb.SaveChanges();
 
                     brain.OpponentType = EPlayerType.Human;
@@ -125,28 +131,32 @@ namespace OthelloGameBrain
                     var player2Name = "Bot";
                     opponentType = EPlayerType.Ai;
 
-                    var othelloGame = new OthelloGame()
+                    if (player1Name != null)
                     {
-                        Player1Name = player1Name,
-                        Player1Type = EPlayerType.Human,
-                        Player2Name = player2Name,
-                        Player2Type = EPlayerType.Ai,
-                        OthelloOption = othelloOptions,
-                        OthelloGameStates = new List<OthelloGameState>()
+                        var othelloGame = new OthelloGame()
                         {
-                            new OthelloGameState()
+                            Player1Name = player1Name,
+                            Player1Type = EPlayerType.Human,
+                            Player2Name = player2Name,
+                            Player2Type = EPlayerType.Ai,
+                            OthelloOption = othelloOptions,
+                            OthelloGameStates = new List<OthelloGameState>()
                             {
-                                AxisX = axisX,
-                                AxisY = axisY,
-                                BlackScore = blackScore,
-                                WhiteScore = whiteScore,
-                                SerializedGameState = brain.GetBrainJson(brain, board),
-                                Winner = winner
+                                new OthelloGameState()
+                                {
+                                    AxisX = axisX,
+                                    AxisY = axisY,
+                                    BlackScore = blackScore,
+                                    WhiteScore = whiteScore,
+                                    SerializedGameState = brain.GetBrainJson(brain, board),
+                                    Winner = winner
+                                }
                             }
-                        }
-                    };
+                        };
 
-                    othelloDb.OthelloGames.Add(othelloGame);
+                        othelloDb.OthelloGames.Add(othelloGame);
+                    }
+
                     othelloDb.SaveChanges();
                     
                     brain.OpponentType = EPlayerType.Ai;

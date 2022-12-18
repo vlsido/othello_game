@@ -2,40 +2,28 @@
 @model Othello_Web.Pages_OthelloGameStates.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Game States";
 }
 
-<h1>Index</h1>
+<h1>Game States</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGameState[0].CreatedAt)
+                Created At
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGameState[0].SerializedGameState)
+                Black Score
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGameState[0].AxisX)
+                White Score
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGameState[0].AxisY)
+                Winner
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGameState[0].BlackScore)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OthelloGameState[0].WhiteScore)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OthelloGameState[0].Winner)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OthelloGameState[0].OthelloGame)
+                Game Id
             </th>
             <th></th>
         </tr>
@@ -45,15 +33,6 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SerializedGameState)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AxisX)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AxisY)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.BlackScore)
@@ -68,7 +47,6 @@
                 @Html.DisplayFor(modelItem => item.OthelloGame!.Id)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
             </td>

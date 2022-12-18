@@ -10,8 +10,7 @@ namespace Othello_Web.Domain
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public string SerializedGameState { get; set; } = default!;
-        public int AxisX { get; set; }
-        public int AxisY { get; set; }
+        public string? Perspective { get; set; }
         public int BlackScore { get; set; }
         public int WhiteScore { get; set; }
         public bool CurrentMoveByBlack { get; set; } = true;

@@ -42,9 +42,6 @@ namespace Othello_Web.Pages_OthelloGames
         }
 
         
-        
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
             OthelloOption = await _context.OthelloOptions.FirstOrDefaultAsync(o => o.Id == OthelloGame.OthelloOptionId) ?? throw new InvalidOperationException();
@@ -56,7 +53,7 @@ namespace Othello_Web.Pages_OthelloGames
             var game = _context.OthelloGames.FirstOrDefault(g => g.Id == OthelloGame.Id);
 
 
-            if (game != null) return RedirectToPage($"/Play?id={game.Id}");
+            if (game != null) return RedirectToPage("/OthelloGames/Index");
             else return NotFound();
         }
     }

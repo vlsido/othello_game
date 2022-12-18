@@ -27,14 +27,8 @@ namespace OthelloGameBrain
             
 
             board[axisX, axisY].IsSelected = true;
-            
-            
-            // if default settings
-            // { }
 
-            // play game until gameOver == true
 
-            
             var _rnd = new Random();
             
             // choose game vs comp or vs real player
@@ -111,11 +105,6 @@ namespace OthelloGameBrain
                             }
                         }
                     }
-
-                   
-
-
-
 
                     if (brain.CurrentPlayer == "White")
                     {

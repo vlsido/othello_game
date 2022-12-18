@@ -8,34 +8,34 @@
 
 <h1>Create</h1>
 
-<h4>OthelloGame</h4>
+<h4>Othello Game</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="OthelloGame.Player1Name" class="control-label"></label>
+                <label asp-for="OthelloGame.Player1Name" class="control-label">Player One Name (Black)</label>
                 <input asp-for="OthelloGame.Player1Name" class="form-control" />
                 <span asp-validation-for="OthelloGame.Player1Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OthelloGame.Player1Type" class="control-label"></label>
+                <label asp-for="OthelloGame.Player1Type" class="control-label">Player One Type</label>
                 <select asp-for="OthelloGame.Player1Type" class="form-select" asp-items="Html.GetEnumSelectList<EPlayerType>()"></select>
                 <span asp-validation-for="OthelloGame.Player1Type" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OthelloGame.Player2Name" class="control-label"></label>
+                <label asp-for="OthelloGame.Player2Name" class="control-label">Player Two Name (White)</label>
                 <input asp-for="OthelloGame.Player2Name" class="form-control" />
                 <span asp-validation-for="OthelloGame.Player2Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OthelloGame.Player2Type" class="control-label"></label>
+                <label asp-for="OthelloGame.Player2Type" class="control-label">Player Two Type</label>
                 <select asp-for="OthelloGame.Player2Type" class="form-select" asp-items="Html.GetEnumSelectList<EPlayerType>()"></select>
                 <span asp-validation-for="OthelloGame.Player2Type" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OthelloGame.OthelloOptionId" class="control-label"></label>
+                <label asp-for="OthelloGame.OthelloOptionId" class="control-label">Choose Option</label>
                 <select asp-for="OthelloGame.OthelloOptionId" class ="form-select" asp-items="Model.OptionSelectList"></select>
             </div>
             <div class="form-group">

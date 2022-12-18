@@ -2,10 +2,10 @@
 @model Othello_Web.Pages_OthelloGames.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Othello Game";
 }
 
-<h1>Index</h1>
+<h1>Games</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -14,25 +14,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGame[0].StartedAt)
+                Started At
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGame[0].GameOverAt)
+                Over At
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGame[0].Player1Name)
+                P1 Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGame[0].Player1Type)
+                P1 Type
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGame[0].Player2Name)
+                P2 Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGame[0].Player2Type)
+                P2 Type
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OthelloGame[0].OthelloOption)
+                Option
             </th>
             <th></th>
         </tr>

@@ -1,43 +1,48 @@
 ﻿@page
 @model Othello_Web.Pages.OthelloGames.PlayModel
 
+<body onload="setTimeout(refresh(event), 2000)">
 <div class="wrapper">
-<div class="one"><h1>Now moving @Model.Brain.CurrentPlayer</h1></div>
+    <div class="one"><h1>Now moving @Model.Brain.CurrentPlayer</h1></div>
     <div class="two">
-        <h2>Player One: @Model.Game.Player1Name</h2>
+        <h2>Black: @Model.Game.Player1Name</h2>
         <h3>Score: @Model.GameState!.BlackScore</h3>
     </div>
     <div class="three">
-        <h2>Player Two: @Model.Game.Player2Name</h2>
-        <h3>Score: @Model.GameState!.WhiteScore</h3>
+        <h2>White: @Model.Game.Player2Name</h2>
+        <h3>Score: @Model.GameState.WhiteScore</h3>
     </div>
-<div class="four">
-    <table class="table table-bordered game-table">
-        @for (var y = 0; y < Model.Brain.BoardSizeVertical; y++)
-        {
-            <tr>
-                @for (var x = 0; x < Model.Brain.BoardSizeHorizontal; x++)
-                {
-                    <td class="game-table-cell" onclick="window.location = 'Play?id=@Model.Game.Id&x=@x&y=@y'" style="padding: 0;">
-
-                        @if (Model.Board[x, y].IsValid)
-                        {
-                                <img width="100%" height="100%" src="https://i.ibb.co/3B5K32S/Valid.png" />
-                        } else if (Model.Board[x, y].PlayerColor == "White")
-                        {
-                                <img width="100%" height="100%" src="https://i.ibb.co/8zgcCkG/White.png" />
-                        } else if (Model.Board[x, y].PlayerColor == "Black")
-                        {
-                                <img width="100%" height="100%" src="https://i.ibb.co/7KXN9FH/Black.png" />
-                        }
-                        else
-                        {
-                                <img width="100%" height="100%" src="https://i.ibb.co/vcJMtHR/Square.png" />
-                        }
-                    </td>
-                }
-            </tr>
-        }
-    </table>
+    <div class="four">
+        <table class="table table-bordered game-table">
+            @for (var y = 0; y < Model.Brain.BoardSizeVertical; y++)
+            {
+                <tr>
+                    @for (var x = 0; x < Model.Brain.BoardSizeHorizontal; x++)
+                    {
+                        <td class="game-table-cell" onclick="window.location = 'Play?id=@Model.Game.Id&x=@x&y=@y&player=@Model.GameState.Perspective'" style="padding: 0;">
+                            @if (Model.Board[x, y].IsValid)
+                            {
+                                <img src="https://i.ibb.co/3B5K32S/Valid.png" alt="Valid"/>
+                            } else
+                                switch (Model.Board[x, y].PlayerColor)
+                                {
+                                    case "White":
+                                        <img src="https://i.ibb.co/8zgcCkG/White.png" alt="White"/>
+                                        break;
+                                    case "Black":
+                                        <img src="https://i.ibb.co/7KXN9FH/Black.png" alt="Black"/>
+                                        break;
+                                    default:
+                                        <img src="https://i.ibb.co/vcJMtHR/Square.png" alt="Square"/>
+                                        break;
+                                }
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
 </div>
-</div>
+<script src="/js/signalr/dist/browser/signalr.js"></script>
+<script src="/js/game.js"></script>
+</body>
