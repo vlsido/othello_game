@@ -38,41 +38,44 @@ namespace Othello_Web.Pages.OthelloGames
                 .Include(gs => gs.OthelloGameStates)
                 .FirstOrDefault(g => g.Id == id);
 
-            
+            BoardSquareState chosenByAi = new BoardSquareState();
+            List<BoardSquareState> validForAi = new List<BoardSquareState>();
+            var _rnd = new Random();
 
             if (game == null || game.OthelloOption == null || game.OthelloGameStates == null)
             {
                 return NotFound();
             }
-            
+
             Brain = new OthelloBrain(game.OthelloOption.Width, game.OthelloOption.Height)
             {
                 BoardSizeHorizontal = game.OthelloOption.Width,
                 BoardSizeVertical = game.OthelloOption.Height
             };
-            
+
             Board = Brain.GetBoard();
             Game = game;
 
-            
 
-            if (_context.OthelloGamesStates.FirstOrDefault(g => g.OthelloGameId == id!.Value && g.Perspective == "player1") == null)
+
+            if (_context.OthelloGamesStates.FirstOrDefault(g =>
+                    g.OthelloGameId == id!.Value && g.Perspective == "player1") == null)
             {
                 var serialized = Brain.GetBrainJson(Brain, Board);
 
                 GameState = new OthelloGameState()
-                    {
-                        BlackScore = 2,
-                        WhiteScore = 2,
-                        Perspective = "player1",
-                        OthelloGameId = id!.Value,
-                        Winner = "null",
-                        SerializedGameState = serialized,
-                    };
-                    if (game.OthelloOption.CurrentPlayer == "Black")
-                    {
-                        GameState.CurrentMoveByBlack = true;
-                    }
+                {
+                    BlackScore = 2,
+                    WhiteScore = 2,
+                    Perspective = "player1",
+                    OthelloGameId = id!.Value,
+                    Winner = "null",
+                    SerializedGameState = serialized,
+                };
+                if (game.OthelloOption.CurrentPlayer == "Black")
+                {
+                    GameState.CurrentMoveByBlack = true;
+                }
                 else
                 {
                     GameState.CurrentMoveByBlack = false;
@@ -82,7 +85,8 @@ namespace Othello_Web.Pages.OthelloGames
                 await _context.SaveChangesAsync();
             }
 
-            if (_context.OthelloGamesStates.FirstOrDefault(g => g.OthelloGameId == id!.Value && g.Perspective == "player2") == null)
+            if (_context.OthelloGamesStates.FirstOrDefault(g =>
+                    g.OthelloGameId == id!.Value && g.Perspective == "player2") == null)
             {
                 var serialized = Brain.GetBrainJson(Brain, Board);
 
@@ -108,6 +112,7 @@ namespace Othello_Web.Pages.OthelloGames
                 _context.OthelloGamesStates.Add(GameState);
                 await _context.SaveChangesAsync();
             }
+
             GameState = _context.OthelloGamesStates.FirstOrDefault(gs =>
                 gs.OthelloGameId == id!.Value && gs.Perspective == player);
             (Brain, Board) = Brain.RestoreBrainFromJson(GameState!.SerializedGameState, Brain);
@@ -119,12 +124,13 @@ namespace Othello_Web.Pages.OthelloGames
 
             const int leftSquares = 0;
 
-
             
+
             if (x != null && y != null)
             {
                 if (GameState != null)
-                    if (GameState.Perspective == "player1" && GameState.CurrentMoveByBlack)
+                    if (GameState.Perspective == "player1" && GameState.CurrentMoveByBlack &&
+                        game.Player1Type != EPlayerType.Ai)
                     {
                         if (Board[x.Value, y.Value].IsValid)
                         {
@@ -134,12 +140,12 @@ namespace Othello_Web.Pages.OthelloGames
                             GameState.CurrentMoveByBlack = false;
                             var opponentGameState = _context.OthelloGamesStates.FirstOrDefault(gs =>
                                 gs.OthelloGameId == id!.Value && gs.Perspective == "player2");
-                            if (opponentGameState != null) 
+                            if (opponentGameState != null)
                             {
                                 opponentGameState.CurrentMoveByBlack = false;
                                 _context.OthelloGamesStates.Update(opponentGameState);
                             }
-                            
+
                             TurnPieces();
                             (Board, LinesOfSquares) = ValidMoves.CheckValidMoves(Brain, Board, LinesOfSquares);
                             ShowValidMoves();
@@ -154,13 +160,15 @@ namespace Othello_Web.Pages.OthelloGames
                                 {
                                     GameState = gameState;
                                 }
+
                                 gameState.SerializedGameState = serializedStr;
                                 _context.OthelloGamesStates.Update(gameState);
                             }
                         }
 
                     }
-                    else if (GameState.Perspective == "player2" && !GameState.CurrentMoveByBlack)
+                    else if (GameState.Perspective == "player2" && !GameState.CurrentMoveByBlack &&
+                             game.Player2Type != EPlayerType.Ai)
                     {
                         if (Board[x.Value, y.Value].IsValid)
                         {
@@ -176,6 +184,7 @@ namespace Othello_Web.Pages.OthelloGames
                                 opponentGameState.CurrentMoveByBlack = true;
                                 _context.OthelloGamesStates.Update(opponentGameState);
                             }
+
                             (Board, LinesOfSquares) = ValidMoves.CheckValidMoves(Brain, Board, LinesOfSquares);
                             ShowValidMoves();
                             TurnPieces();
@@ -191,25 +200,46 @@ namespace Othello_Web.Pages.OthelloGames
                                 {
                                     GameState = gameState;
                                 }
+
                                 gameState.SerializedGameState = serializedStr;
                                 _context.OthelloGamesStates.Update(gameState);
                             }
                         }
                     }
             }
-            
+
             (GameState!.WhiteScore, GameState.BlackScore, GameState.Winner) =
                 CountScore.Score(Board, GameState.BlackScore, GameState.WhiteScore, GameState.Winner, leftSquares);
 
             (Board, LinesOfSquares) = ValidMoves.CheckValidMoves(Brain, Board, LinesOfSquares);
             ShowValidMoves();
 
+            if (game.Player1Type == EPlayerType.Ai || game.Player2Type == EPlayerType.Ai)
+            {
+                if (GameState != null && GameState.CurrentMoveByBlack && game.Player1Type == EPlayerType.Ai)
+                {
+                    MakeAiMove("Black");
+                    return Page();
+                }
 
+                if (GameState != null && !GameState.CurrentMoveByBlack && game.Player2Type == EPlayerType.Ai)
+                {
+                    MakeAiMove("White");
+                    
+                    return Page();
+                }
+            }
+
+            if (GameState!.Winner != "null")
+            {
+                Game.GameOverAt = DateTime.Now;
+                _context.OthelloGames.Update(Game);
+            }
 
             await _context.SaveChangesAsync();
-            
-            return Page();
 
+
+            return Page();
 
             void TurnPieces()
             {
@@ -250,8 +280,88 @@ namespace Othello_Web.Pages.OthelloGames
                     }
                 }
             }
-        }
 
-        
+            void MakeAiMove(string aiColor)
+            {
+                Thread.Sleep(750);
+                ShowValidMoves();
+                for (var j = 0; j < LinesOfSquares.Count; j++)
+                {
+                    for (var n = 0; n < LinesOfSquares[j].Count; n++)
+                    {
+                        if (LinesOfSquares[j][n].IsValid == true)
+                        {
+                            validForAi.Add(LinesOfSquares[j][n]);
+                        }
+
+                    }
+                }
+
+                var chosenFromList = _rnd!.Next(0, validForAi.Count);
+                chosenByAi = validForAi[chosenFromList];
+                chosenByAi.PlayerColor = aiColor;
+                Board[chosenByAi.X, chosenByAi.Y]
+                    .IsPlaced = true;
+                Board[chosenByAi.X, chosenByAi.Y]
+                    .PlayerColor = aiColor;
+
+
+                for (var j = 0; j < LinesOfSquares.Count; j++)
+                {
+                    for (var n = 0; n < LinesOfSquares[j].Count; n++)
+                    {
+                        if (LinesOfSquares[j][n].X == chosenByAi.X && LinesOfSquares[j][n].Y == chosenByAi.Y)
+                        {
+                            foreach (var item in LinesOfSquares[j])
+                            {
+                                if (item.IsValid)
+                                {
+                                    Board[item.X, item.Y].IsPlaced = true;
+                                    Board[item.X, item.Y].PlayerColor = aiColor;
+                                }
+
+                                if (item.PlayerColor != aiColor)
+                                {
+                                    Board[item.X, item.Y].PlayerColor = aiColor;
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                Brain.CurrentPlayer = aiColor == "Black" ? "White" : "Black";
+                if (GameState.CurrentMoveByBlack)
+                {
+                    GameState.CurrentMoveByBlack = false;
+                }
+                else if (!GameState.CurrentMoveByBlack)
+                {
+                    GameState.CurrentMoveByBlack = true;
+                }
+
+                (GameState!.WhiteScore, GameState.BlackScore, GameState.Winner) =
+                    CountScore.Score(Board, GameState.BlackScore, GameState.WhiteScore, GameState.Winner, leftSquares);
+                (Board, LinesOfSquares) = ValidMoves.CheckValidMoves(Brain, Board, LinesOfSquares);
+                ShowValidMoves();
+
+                var serializedString = Brain.GetBrainJson(Brain, Board);
+
+                var gameStates = _context.OthelloGamesStates.Where(og => og.OthelloGameId == id!.Value);
+
+                foreach (var gameState in gameStates)
+                {
+                    if (gameState.Perspective == player)
+                    {
+                        GameState = gameState;
+                    }
+
+                    gameState.SerializedGameState = serializedString;
+                    _context.OthelloGamesStates.Update(gameState);
+
+                }
+                _context.SaveChanges();
+            }
+        }
     }
 }

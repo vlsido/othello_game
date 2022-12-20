@@ -25,7 +25,7 @@ namespace OthelloGameBrain
                         whiteScore += 1;
                     }
 
-                    if (!board[x, y].IsPlaced)
+                    if (board[x, y].IsValid)
                     {
                         leftSquares += 1;
                     }

@@ -3,7 +3,24 @@
 
 <body onload="setTimeout(refresh(event), 2000)">
 <div class="wrapper">
-    <div class="one"><h1>Now moving @Model.Brain.CurrentPlayer</h1></div>
+<div class="one">
+    @if (Model.GameState!.Winner != "null" && Model.GameState!.Winner == "Black")
+    {
+        <h1>Black Won! Thanks for playing!</h1>
+    }
+    else if (Model.GameState!.Winner != "null" && Model.GameState!.Winner == "White")
+    {
+        <h1>White Won! Thanks for playing!</h1>
+    }
+    else if (Model.GameState!.Winner != "null" && Model.GameState!.Winner == "Tie")
+    {
+        <h1>Tie! Thanks for playing!</h1>
+    }
+    else
+    {
+        <h1>Now moving @Model.Brain.CurrentPlayer</h1>
+    }
+    </div>
     <div class="two">
         <h2>Black: @Model.Game.Player1Name</h2>
         <h3>Score: @Model.GameState!.BlackScore</h3>
@@ -23,7 +40,8 @@
                             @if (Model.Board[x, y].IsValid)
                             {
                                 <img src="https://i.ibb.co/3B5K32S/Valid.png" alt="Valid"/>
-                            } else
+                            }
+                            else
                                 switch (Model.Board[x, y].PlayerColor)
                                 {
                                     case "White":
