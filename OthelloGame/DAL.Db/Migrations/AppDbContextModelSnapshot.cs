@@ -26,9 +26,6 @@ namespace DAL.Db.Migrations
                     b.Property<DateTime?>("GameOverAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("GameWonByPlayer")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("OthelloOptionId")
                         .HasColumnType("INTEGER");
 
@@ -76,8 +73,14 @@ namespace DAL.Db.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("CurrentMoveByBlack")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("OthelloGameId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Perspective")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SerializedGameState")
                         .IsRequired()

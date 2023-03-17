@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
+using DAL.Db;
 using Domain;
 
 namespace OthelloGameBrain
@@ -15,10 +17,12 @@ namespace OthelloGameBrain
         public static string BasePath = "D:\\othellogame\\OthelloGame\\SavedGames";
         public string CurrentPlayer = "Black";
         public EPlayerType OpponentType;
+
         public GameBoard GameBoard;
 
         private readonly Random _rnd = new();
 
+        public int GameId { get; set; }
         public int BoardSizeHorizontal { get; set; }
         public int BoardSizeVertical { get; set; } 
 
@@ -67,7 +71,7 @@ namespace OthelloGameBrain
         }
 
         //public string GetBrainJson(OthelloBrain brain, BoardSquareState[,] board, ApplicationDbContext db)
-        public string GetBrainJson(OthelloBrain brain, BoardSquareState[,] board)
+        public string GetBrainJson()
         {
             var jsonOptions = new JsonSerializerOptions()
             {
@@ -77,28 +81,28 @@ namespace OthelloGameBrain
 
             var dto = new GameDTO();
 
-            for (var x = 0; x <= board.GetLength(0); x++)
+            for (var x = 0; x <= GameBoard.Board.GetLength(0); x++)
             {
                 dto.GameBoard.Board.Add(new List<BoardSquareState>());
-                for (var y = 0; y < board.GetLength(1); y++)
+                for (var y = 0; y < GameBoard.Board.GetLength(1); y++)
                 {
                     dto.GameBoard.Board[x].Add(new BoardSquareState());
                 }
                 
 
             }
-            dto.CurrentPlayer = brain.CurrentPlayer;
+            dto.CurrentPlayer = CurrentPlayer;
 
-            for (var x = 0; x < board.GetLength(0); x++)
+            for (var x = 0; x < GameBoard.Board.GetLength(0); x++)
             {
-                for (var y = 0; y < board.GetLength(1); y++)
+                for (var y = 0; y < GameBoard.Board.GetLength(1); y++)
                 {
-                    dto.GameBoard.Board[x][y] = board[x, y];
+                    dto.GameBoard.Board[x][y] = GameBoard.Board[x, y];
                 }
             }
 
-            dto.BoardSizeHorizontal = brain.BoardSizeHorizontal;
-            dto.BoardSizeVertical = brain.BoardSizeVertical;
+            dto.BoardSizeHorizontal = BoardSizeHorizontal;
+            dto.BoardSizeVertical = BoardSizeVertical;
 
             var jsonStr = JsonSerializer.Serialize(dto, jsonOptions);
 
@@ -178,18 +182,146 @@ namespace OthelloGameBrain
             return (brain, board)!;
         }
 
-        //public static GameDTO? LoadGame(string name)
-        //{
-        //    var savedBoardState = BasePath + name + Path.DirectorySeparatorChar + "boardState.json";
-        //    if (File.Exists(savedBoardState))
-        //    {
-        //        string jsonStringBoard = File.ReadAllText(savedBoardState);
-        //        return JsonSerializer.Deserialize<GameDTO>(jsonStringBoard)
-        //    }
-        //    else
-        //    {
-        //        var db = new ApplicationDbContext();
-        //    }
-        //}
+        public bool MakeAMove(bool web, int id, OthelloGame game, OthelloBrain brain, OthelloGameState gameState, BoardSquareState[,] board, int axisX, int axisY, 
+            string playerColor, List<List<BoardSquareState>> linesOfSquares, bool movedone,
+            AppDbContext othelloDb, string player)
+        {
+            ValidMoves valid = new ValidMoves();
+            if (!web)
+            {
+                if (board[axisX, axisY].IsValid)
+                {
+                    board[axisX, axisY].IsPlaced = true;
+                    board[axisX, axisY].PlayerColor = playerColor;
+
+                   
+                    TurnPieces();
+
+                    return movedone = true; 
+                  
+                }
+            } else if (web)
+            {
+                if (gameState.Perspective == "player1" && gameState.CurrentMoveByBlack &&
+                        game.Player1Type != EPlayerType.Ai)
+                {
+                    if (board[axisX, axisY].IsValid)
+                    {
+                        board[axisX, axisY].IsPlaced = true;
+                        board[axisX, axisY].IsValid = false; // check if needed
+                        board[axisX, axisY].PlayerColor = brain.CurrentPlayer;
+                        gameState.CurrentMoveByBlack = false;
+                        var opponentGameState = othelloDb.OthelloGamesStates.FirstOrDefault(gs =>
+                            gs.OthelloGameId == id! && gs.Perspective == "player2");
+                        if (opponentGameState != null)
+                        {
+                            opponentGameState.CurrentMoveByBlack = false;
+                            othelloDb.OthelloGamesStates.Update(opponentGameState);
+                        }
+                        
+
+                        (board, linesOfSquares) = valid.CheckValidMoves(brain, board, linesOfSquares);
+                        ShowValidMoves();
+                        TurnPieces();
+                      
+                        SaveGameStates();
+                        othelloDb.SaveChanges();
+                        return movedone = true;
+                    }
+                   
+                }
+                else if (gameState.Perspective == "player2" && !gameState.CurrentMoveByBlack &&
+                        game.Player2Type != EPlayerType.Ai)
+                {
+                    if (board[axisX, axisY].IsValid)
+                    {
+                        board[axisX, axisY].IsPlaced = true;
+                        board[axisX, axisY].IsValid = false; // check if needed
+                        board[axisX, axisY].PlayerColor = brain.CurrentPlayer;
+                        gameState.CurrentMoveByBlack = true;
+                        var opponentGameState = othelloDb.OthelloGamesStates.FirstOrDefault(gs =>
+                            gs.OthelloGameId == id! && gs.Perspective == "player1");
+                        if (opponentGameState != null)
+                        {
+                            opponentGameState.CurrentMoveByBlack = true;
+                            othelloDb.OthelloGamesStates.Update(opponentGameState);
+                        }
+                        
+                        (board, linesOfSquares) = valid.CheckValidMoves(brain, board, linesOfSquares);
+                        ShowValidMoves();
+                        TurnPieces();
+                        
+                       
+                        SaveGameStates();
+                        othelloDb.SaveChanges();
+                        return movedone = true;
+                    }
+
+                }
+
+            }
+            return movedone = false;
+            void TurnPieces()
+            {
+                for (var i = 0; i < linesOfSquares.Count; i++)
+                {
+                    for (var j = 0; j < linesOfSquares[i].Count; j++)
+                    {
+                        if (linesOfSquares[i][j].X == axisX && linesOfSquares[i][j].Y == axisY)
+                        {
+                            foreach (var item in linesOfSquares[i])
+                            {
+                                if (item.IsValid)
+                                {
+                                    board[item.X, item.Y].IsPlaced = true;
+                                    board[item.X, item.Y].PlayerColor = brain.CurrentPlayer;
+                                }
+
+                                if (item.PlayerColor != brain.CurrentPlayer)
+                                {
+                                    board[item.X, item.Y].PlayerColor = brain.CurrentPlayer;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            void ShowValidMoves()
+            {
+                foreach (var firstDimension in linesOfSquares)
+                {
+                    foreach (var secondDimension in firstDimension)
+                    {
+                        if (secondDimension.IsValid)
+                        {
+                            board[secondDimension.X, secondDimension.Y].IsValid = true;
+                        }
+                    }
+                }
+            }
+
+            void SaveGameStates()
+            {
+                brain.CurrentPlayer = gameState.CurrentMoveByBlack ? "Black" : "White";
+                var serializedStr = brain.GetBrainJson();
+                var gameStates = othelloDb.OthelloGamesStates.Where(og => og.OthelloGameId == id);
+
+                foreach (var gState in gameStates)
+                {
+                    if (gState.Perspective == player)
+                    {
+                        gameState = gState;
+                    }
+
+                    gState.SerializedGameState = serializedStr;
+                    othelloDb.OthelloGamesStates.Update(gState);
+                }
+
+                othelloDb.SaveChanges();
+            }
+
+
+        }
+        
     }
     }

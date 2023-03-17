@@ -2,19 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DAL.Db;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Othello_Web.Data;
-using Othello_Web.Domain;
 using OthelloGameBrain;
 
 namespace Othello_Web.Pages_OthelloGames
 {
     public class CreateModel : PageModel
     {
-        private readonly Othello_Web.Data.ApplicationDbContext _context;
+
+        
 
         [BindProperty]
         public OthelloGame OthelloGame { get; set; } = default!;
@@ -29,28 +30,34 @@ namespace Othello_Web.Pages_OthelloGames
 
         public SelectList OptionSelectList { get; set; } = default!;
 
-        public CreateModel(Othello_Web.Data.ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        
 
         public IActionResult OnGet()
         {
-            
-            OptionSelectList = new SelectList(_context.OthelloOptions, "Id", "Name");
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+            var othelloDb = new AppDbContext(options);
+
+            OptionSelectList = new SelectList(othelloDb.OthelloOptions, "Id", "Name");
             return Page();
         }
 
         
         public async Task<IActionResult> OnPostAsync()
         {
-            OthelloOption = await _context.OthelloOptions.FirstOrDefaultAsync(o => o.Id == OthelloGame.OthelloOptionId) ?? throw new InvalidOperationException();
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+            var othelloDb = new AppDbContext(options);
+
+            OthelloOption = await othelloDb.OthelloOptions.FirstOrDefaultAsync(o => o.Id == OthelloGame.OthelloOptionId) ?? throw new InvalidOperationException();
             OthelloGame.OthelloOption = OthelloOption;
 
-            _context.OthelloGames.Add(OthelloGame);
-            await _context.SaveChangesAsync();
+            othelloDb.OthelloGames.Add(OthelloGame);
+            await othelloDb.SaveChangesAsync();
 
-            var game = _context.OthelloGames.FirstOrDefault(g => g.Id == OthelloGame.Id);
+            var game = othelloDb.OthelloGames.FirstOrDefault(g => g.Id == OthelloGame.Id);
 
 
             if (game != null) return RedirectToPage("/OthelloGames/Index");

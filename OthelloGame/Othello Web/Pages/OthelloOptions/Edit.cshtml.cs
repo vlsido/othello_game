@@ -2,35 +2,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DAL.Db;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Othello_Web.Data;
-using Othello_Web.Domain;
+using OthelloGameBrain;
 
 namespace Othello_Web.Pages_OthelloOptions
 {
     public class EditModel : PageModel
     {
-        private readonly Othello_Web.Data.ApplicationDbContext _context;
-
-        public EditModel(Othello_Web.Data.ApplicationDbContext context)
-        {
-            _context = context;
-        }
 
         [BindProperty]
         public OthelloOption OthelloOption { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.OthelloOptions == null)
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+            var othelloDb = new AppDbContext(options);
+            if (id == null || othelloDb.OthelloOptions == null)
             {
                 return NotFound();
             }
 
-            var othellooption =  await _context.OthelloOptions.FirstOrDefaultAsync(m => m.Id == id);
+            var othellooption =  await othelloDb.OthelloOptions.FirstOrDefaultAsync(m => m.Id == id);
             if (othellooption == null)
             {
                 return NotFound();
@@ -43,16 +42,20 @@ namespace Othello_Web.Pages_OthelloOptions
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+            var othelloDb = new AppDbContext(options);
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(OthelloOption).State = EntityState.Modified;
+            othelloDb.Attach(OthelloOption).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await othelloDb.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -71,7 +74,11 @@ namespace Othello_Web.Pages_OthelloOptions
 
         private bool OthelloOptionExists(int id)
         {
-          return (_context.OthelloOptions?.Any(e => e.Id == id)).GetValueOrDefault();
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+            var othelloDb = new AppDbContext(options);
+            return (othelloDb.OthelloOptions?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

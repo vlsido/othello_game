@@ -2,34 +2,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DAL.Db;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Othello_Web.Data;
-using Othello_Web.Domain;
+
 
 namespace Othello_Web.Pages_OthelloOptions
 {
     public class DeleteModel : PageModel
     {
-        private readonly Othello_Web.Data.ApplicationDbContext _context;
-
-        public DeleteModel(Othello_Web.Data.ApplicationDbContext context)
-        {
-            _context = context;
-        }
+       
 
         [BindProperty]
       public OthelloOption OthelloOption { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.OthelloOptions == null)
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+            var othelloDb = new AppDbContext(options);
+            if (id == null || othelloDb.OthelloOptions == null)
             {
                 return NotFound();
             }
 
-            var othellooption = await _context.OthelloOptions.FirstOrDefaultAsync(m => m.Id == id);
+            var othellooption = await othelloDb.OthelloOptions.FirstOrDefaultAsync(m => m.Id == id);
 
             if (othellooption == null)
             {
@@ -44,17 +44,21 @@ namespace Othello_Web.Pages_OthelloOptions
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.OthelloOptions == null)
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+            var othelloDb = new AppDbContext(options);
+            if (id == null || othelloDb.OthelloOptions == null)
             {
                 return NotFound();
             }
-            var othellooption = await _context.OthelloOptions.FindAsync(id);
+            var othellooption = await othelloDb.OthelloOptions.FindAsync(id);
 
             if (othellooption != null)
             {
                 OthelloOption = othellooption;
-                _context.OthelloOptions.Remove(OthelloOption);
-                await _context.SaveChangesAsync();
+                othelloDb.OthelloOptions.Remove(OthelloOption);
+                await othelloDb.SaveChangesAsync();
             }
 
             return RedirectToPage("./Index");

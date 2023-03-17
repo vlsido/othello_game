@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Domain;
+using DAL;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Othello_Web.Data;
-using Othello_Web.Domain;
+using DAL.Db;
 
 namespace Othello_Web.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly ApplicationDbContext _othelloDb;
+        private readonly AppDbContext _othelloDb;
 
-        public IndexModel(ILogger<IndexModel> logger, ApplicationDbContext othelloDb)
+        public IndexModel(ILogger<IndexModel> logger, AppDbContext othelloDb)
         {
             _logger = logger;
             _othelloDb = othelloDb;

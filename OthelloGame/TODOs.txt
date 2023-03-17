@@ -1,3 +1,0 @@
-When a player has no valid moves, he pass his turn and the opponent continues. A player can not voluntarily forfeit his turn. When both players can not make a valid move the gane ends.
-1. Заполнить гейм стейт
-2. Сейв лоад сделать, сохранив весь гейм стейт

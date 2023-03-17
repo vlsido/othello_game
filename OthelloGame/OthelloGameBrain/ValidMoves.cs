@@ -17,7 +17,6 @@ namespace OthelloGameBrain
             for (var x = 0; x < board.GetLength(0); x++)
             for (var y = 0; y < board.GetLength(1); y++)
                 board[x, y].IsValid = false;
-            
             var playerColor = "";
 
             var checkHorizontally = true;
@@ -64,7 +63,7 @@ namespace OthelloGameBrain
             var placedDownLeft = 0;
 
 
-            List<BoardSquareState> squares = new List<BoardSquareState>();
+            List<BoardSquareState> squares = new();
             linesOfSquares.Clear();
 
             if (brain.CurrentPlayer == "Black")

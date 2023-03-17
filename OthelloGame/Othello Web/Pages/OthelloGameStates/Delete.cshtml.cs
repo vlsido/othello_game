@@ -2,34 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DAL.Db;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Othello_Web.Data;
-using Othello_Web.Domain;
+using OthelloGameBrain;
 
 namespace Othello_Web.Pages_OthelloGameStates
 {
     public class DeleteModel : PageModel
     {
-        private readonly Othello_Web.Data.ApplicationDbContext _context;
-
-        public DeleteModel(Othello_Web.Data.ApplicationDbContext context)
-        {
-            _context = context;
-        }
 
         [BindProperty]
       public OthelloGameState OthelloGameState { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.OthelloGamesStates == null)
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+            var othelloDb = new AppDbContext(options);
+            if (id == null || othelloDb.OthelloGamesStates == null)
             {
                 return NotFound();
             }
 
-            var othellogamestate = await _context.OthelloGamesStates.FirstOrDefaultAsync(m => m.Id == id);
+            var othellogamestate = await othelloDb.OthelloGamesStates.FirstOrDefaultAsync(m => m.Id == id);
 
             if (othellogamestate == null)
             {
@@ -44,17 +43,21 @@ namespace Othello_Web.Pages_OthelloGameStates
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.OthelloGamesStates == null)
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+            var othelloDb = new AppDbContext(options);
+            if (id == null || othelloDb.OthelloGamesStates == null)
             {
                 return NotFound();
             }
-            var othellogamestate = await _context.OthelloGamesStates.FindAsync(id);
+            var othellogamestate = await othelloDb.OthelloGamesStates.FindAsync(id);
 
             if (othellogamestate != null)
             {
                 OthelloGameState = othellogamestate;
-                _context.OthelloGamesStates.Remove(OthelloGameState);
-                await _context.SaveChangesAsync();
+                othelloDb.OthelloGamesStates.Remove(OthelloGameState);
+                await othelloDb.SaveChangesAsync();
             }
 
             return RedirectToPage("./Index");

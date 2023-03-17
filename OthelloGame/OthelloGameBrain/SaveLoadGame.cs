@@ -22,7 +22,7 @@ namespace OthelloGameBrain
             var savedGameName = Console.ReadLine();
 
             // var gameConfJsonStr = JsonSerializer.Serialize(boardAConfig, jsonOptions);
-            var gameBoardJsonStr = brain.GetBrainJson(brain, board);
+            var gameBoardJsonStr = brain.GetBrainJson();
 
             var saveMenu = new Menu("Where to save?", EMenuLevel.SecondOrMore);
 
@@ -37,37 +37,23 @@ namespace OthelloGameBrain
 
             string SaveToDatabase()
             {
-                var options = new DbContextOptionsBuilder<AppDbContext>()
-                    .UseSqlite(@"Data Source=D:\othellogame\OthelloGame\OthelloGame\othello.db")
-                    .Options;
-
-                using var ctx = new AppDbContext(options);
-
                 var gameState = new OthelloGameState()
                 {
                     AxisX = axisX,
                     AxisY = axisY,
                     BlackScore = blackScore,
                     WhiteScore = whiteScore,
+                    Winner = winner,
+                    OthelloGameId = brain.GameId,
                     SerializedGameState = gameBoardJsonStr
                 };
 
-                var gameOption = new OthelloOption()
-                {
-                    Width = brain.BoardSizeHorizontal,
-                    Height = brain.BoardSizeVertical,
-                    Name = savedGameName!,
-                    CurrentPlayer = brain.CurrentPlayer
-                };
 
-                var game = new OthelloGame()
-                {
-                    
-                };
+                othelloDb.OthelloGamesStates.Update(gameState);
 
-                ctx.SaveChanges();
+                othelloDb.SaveChanges();
 
-                foreach (var othelloGameState in ctx.OthelloGamesStates)
+                foreach (var othelloGameState in othelloDb.OthelloGamesStates)
                 {
                     Console.WriteLine(othelloGameState);
                 }
@@ -102,31 +88,68 @@ namespace OthelloGameBrain
             var games = repo.GetGames();
 
 
-            var saveMenu = new Menu("Where to save?", EMenuLevel.SecondOrMore);
+            var loadMenu = new Menu("Where to load from?", EMenuLevel.SecondOrMore);
 
-            foreach (var game in games)
+            loadMenu.AddMenuItems(new List<MenuItem>()
+                {
+                    //new("Database", SaveToDatabase),
+                    new("Local Storage", LocalStorage),
+                    new("Database", Database)
+                });
+
+            loadMenu.Run();
+
+            string LocalStorage()
             {
-                saveMenu.AddMenuItems(new List<MenuItem>()
+                var localStorage = new Menu("Choose from Local Storage", EMenuLevel.SecondOrMore);
+                foreach (var game in games)
+                {
+                    localStorage.AddMenuItems(new List<MenuItem>()
                 {
                     //new("Database", SaveToDatabase),
                     new($"{game}", StartLoadedGame)
                 });
-                string StartLoadedGame()
-                {
-                    var gameAction = new GameAction();
-                    var gameState = repo.GetGameState(game);
-                    (brain, brain.GameBoard.Board) = brain.RestoreBrainFromJson(gameState.SerializedGameState, brain);
-                    board = brain.GetBoard();
-                    return gameAction.Start(brain, board, gameState.AxisX, gameState.AxisY, gameState.Winner,
-                        gameState.WhiteScore, gameState.BlackScore, othelloDb);
+                    string StartLoadedGame()
+                    {
+                        var gameAction = new GameAction();
+                        var gameState = repo.GetGameState(game);
+                        (brain, board) = brain.RestoreBrainFromJson(gameState.SerializedGameState, brain);
+
+                        return gameAction.Start(brain, board, gameState.AxisX, gameState.AxisY, gameState.Winner!,
+                            gameState.WhiteScore, gameState.BlackScore, othelloDb);
+                    }
                 }
+
+
+                localStorage.Run();
+
+
+
+                return "";
             }
-            
 
-            saveMenu.Run();
-
-            
-
+            string Database()
+            {
+                var database = new Menu("Choose from Database", EMenuLevel.SecondOrMore);
+                foreach (var game in othelloDb.OthelloGames)
+                {
+                    database.AddMenuItems(new List<MenuItem>()
+                {
+                    new($"{game.Id}.{game.Player1Name} vs {game.Player2Name}", StartLoadedGame)
+                });
+                    string StartLoadedGame()
+                    {
+                        var gameAction = new GameAction();
+                        var gameState = othelloDb.OthelloGamesStates.FirstOrDefault(g => g.OthelloGameId == game.Id);
+                        (brain, board) = brain.RestoreBrainFromJson(gameState!.SerializedGameState, brain);
+                       
+                        return gameAction.Start(brain, board, gameState.AxisX, gameState.AxisY, gameState.Winner!,
+                            gameState.WhiteScore, gameState.BlackScore, othelloDb);
+                    }
+                }
+                database.Run();
+                return "";
+            }
             return "";
         }
 

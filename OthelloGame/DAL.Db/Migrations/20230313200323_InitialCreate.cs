@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Othello_Web.Data.Migrations
+namespace DAL.Db.Migrations
 {
-    public partial class InitialDesign : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,12 +13,12 @@ namespace Othello_Web.Data.Migrations
                 name: "OthelloOptions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Width = table.Column<int>(type: "int", nullable: false),
-                    Height = table.Column<int>(type: "int", nullable: false),
-                    CurrentPlayer = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Width = table.Column<int>(type: "INTEGER", nullable: false),
+                    Height = table.Column<int>(type: "INTEGER", nullable: false),
+                    CurrentPlayer = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,15 +29,15 @@ namespace Othello_Web.Data.Migrations
                 name: "OthelloGames",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GameOverAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Player1Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Player1Type = table.Column<int>(type: "int", nullable: false),
-                    Player2Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Player2Type = table.Column<int>(type: "int", nullable: false),
-                    OthelloOptionId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    StartedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    GameOverAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Player1Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    Player1Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    Player2Name = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    Player2Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    OthelloOptionId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,16 +54,18 @@ namespace Othello_Web.Data.Migrations
                 name: "OthelloGamesStates",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SerializedGameState = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AxisX = table.Column<int>(type: "int", nullable: false),
-                    AxisY = table.Column<int>(type: "int", nullable: false),
-                    BlackScore = table.Column<int>(type: "int", nullable: false),
-                    WhiteScore = table.Column<int>(type: "int", nullable: false),
-                    Winner = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OthelloGameId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    SerializedGameState = table.Column<string>(type: "TEXT", nullable: false),
+                    Perspective = table.Column<string>(type: "TEXT", nullable: true),
+                    AxisX = table.Column<int>(type: "INTEGER", nullable: false),
+                    AxisY = table.Column<int>(type: "INTEGER", nullable: false),
+                    BlackScore = table.Column<int>(type: "INTEGER", nullable: false),
+                    WhiteScore = table.Column<int>(type: "INTEGER", nullable: false),
+                    CurrentMoveByBlack = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Winner = table.Column<string>(type: "TEXT", nullable: true),
+                    OthelloGameId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

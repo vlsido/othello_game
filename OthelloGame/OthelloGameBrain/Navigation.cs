@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Db;
+using System.Net;
 
 namespace OthelloGameBrain
 {
@@ -17,10 +18,6 @@ namespace OthelloGameBrain
             var validMove = new ValidMoves();
             var validCount = 0;
             var pause = new PauseMenu();
-
-            
-
-            // TODO: если все плейсед, то чек счёт
 
             // First check
             validMove.CheckValidMoves(brain, board, linesOfSquares);
@@ -120,41 +117,14 @@ namespace OthelloGameBrain
                         board[axisX, axisY].IsSelected = true;
                         break;
                     case ConsoleKey.Enter:
-                        if (board[axisX, axisY].IsValid)
-                        {
-                            board[axisX, axisY].IsPlaced = true;
-                            board[axisX, axisY].PlayerColor = playerColor;
-
-                            for (var i = 0; i < linesOfSquares.Count; i++)
-                            {
-                                for (var j = 0; j < linesOfSquares[i].Count; j++)
-                                {
-                                    if (linesOfSquares[i][j].X == axisX && linesOfSquares[i][j].Y == axisY)
-                                    {
-                                        foreach (var item in linesOfSquares[i])
-                                        {
-                                            if (item.IsValid)
-                                            {
-                                                board[item.X, item.Y].IsPlaced = true;
-                                                board[item.X, item.Y].PlayerColor = playerColor;
-                                            }
-
-                                            if (item.PlayerColor != playerColor)
-                                            {
-                                                board[item.X, item.Y].PlayerColor = playerColor;
-                                            }
-                                        }
-                                        
-                                    }
-                                }
-                            }
-
-                            moveDone = true;
-                        }
-
+                        var web = false;
+                        OthelloGame game = new OthelloGame();
+                        OthelloGameState gameState = new OthelloGameState();
+                        (moveDone) = brain.MakeAMove(web, 0, game, brain, gameState, board,
+                            axisX, axisY, brain.CurrentPlayer, linesOfSquares, moveDone, othelloDb, "player1");
                         
                         break;
-                    case ConsoleKey.P:
+                    case ConsoleKey.E:
                         pause.PauseMenuFunction(brain, board, linesOfSquares, axisX, axisY, winner, blackScore, whiteScore, othelloDb);
                         break;
                 }

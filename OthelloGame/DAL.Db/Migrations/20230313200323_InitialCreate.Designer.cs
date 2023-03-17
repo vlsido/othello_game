@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Db.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221031143740_InitialCreate")]
+    [Migration("20230313200323_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,9 +26,6 @@ namespace DAL.Db.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("GameOverAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("GameWonByPlayer")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OthelloOptionId")
@@ -78,8 +75,14 @@ namespace DAL.Db.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("CurrentMoveByBlack")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("OthelloGameId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Perspective")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SerializedGameState")
                         .IsRequired()
