@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 using System.Xml;
 using DAL.Db;
 using Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace OthelloGameBrain
 {
     public class OthelloBrain
     {
-        public static string BasePath = "D:\\othellogame\\OthelloGame\\SavedGames";
+        public static string BasePath = "E:\\othellogame\\OthelloGame\\SavedGames";
         public string CurrentPlayer = "Black";
         public EPlayerType OpponentType;
 
@@ -28,10 +29,16 @@ namespace OthelloGameBrain
 
         public OthelloBrain(int boardSizeHorizontal, int boardSizeVertical)
         {
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(@"Data Source=E:\othellogame\OthelloGame\OthelloGame\othello.db")
+                .Options;
+
+            using var othelloDb = new AppDbContext(options);
             GameBoard = new GameBoard
             {
                 Board = new BoardSquareState[boardSizeHorizontal, boardSizeVertical]
             };
+            GameId = othelloDb.OthelloGames.Where(games => games.Id != 0).Count() + 1;
         }
 
         public BoardSquareState[,] GetBoard()

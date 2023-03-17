@@ -124,7 +124,7 @@ namespace OthelloGameBrain
                             axisX, axisY, brain.CurrentPlayer, linesOfSquares, moveDone, othelloDb, "player1");
                         
                         break;
-                    case ConsoleKey.E:
+                    case ConsoleKey.Backspace:
                         pause.PauseMenuFunction(brain, board, linesOfSquares, axisX, axisY, winner, blackScore, whiteScore, othelloDb);
                         break;
                 }
